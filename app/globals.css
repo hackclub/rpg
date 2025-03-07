@@ -10,6 +10,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: #f2994b;
+  --color-darker: #1c1d26;
+  --color-dark: #293340;
+  --font-text: Domine, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,41 +23,28 @@
   }
 }
 
-
-@layer base {
-  @font-face {
-    font-family: "Sughayer Separates_26";
-    src: url(/SughayerSeparates26-qq7d.ttf)
-  }
-}
-
-
-h1 {
+h1, h2, h3 {
   font-family: Metal Mania, sans-serif;
 }
 
-.bg-dark {
-  background: #293340;
-}
-
-.object-dark {
-  background: #1c1d26;
-}
-
-.text-accent {
-  color: #f2994b;
-}
-
-.divider {
-  font-family: "Sughayer Separates_26";
+h2 {
+  @apply text-2xl sm:text-4xl py-3
 }
 
 .vignette {
   box-shadow: inset 0 0px 800px 32px rgb(0 0 0 / 0.8)
 }
 
+.vignette-sm {
+  box-shadow: inset 0 0px 12px 6px rgb(0 0 0 / 0.2)
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Domine, sans-serif;
+}
+
+body {
+  cursor: url(/image.png), auto
 }

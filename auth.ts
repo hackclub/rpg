@@ -19,16 +19,7 @@ export const config: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({token, account, profile}) {
-      if (account) {
-        token = Object.assign({}, token, { access_token: String(account.access_token), slack_id: profile!.sub });
-      }
-      return token
-    },
     async session({session, token, user}) {
-    if(session) {
-      session = Object.assign({}, { ...session }, {access_token: String(token.access_token), slack_id: token.slack_id})
-    }    
     return { ...session }
     }
   },

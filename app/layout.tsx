@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "RPG",
@@ -14,9 +15,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className = "bg-white">
-        {children}
-      </body>
+      <SessionProvider>
+        <body className = "bg-dark">
+            <div className = "*:min-h-screen max-h-full bg-dark bg-[url(/bg.svg)] *:p-16 *:md:p-24 *:sm:p-30 inset-shadow-black vignette z-20">
+            {children}
+            </div>
+        </body>
+      </SessionProvider>
     </html>
   );
 }
