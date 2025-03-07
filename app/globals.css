@@ -45,6 +45,7 @@ body {
   font-family: Domine, sans-serif;
 }
 
-body {
-  cursor: url(/image.png), auto
+* {
+  cursor: url(/image.png), auto;
+  @apply selection:bg-accent/80 selection:p-2 selection:text-darker
 }
