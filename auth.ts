@@ -1,9 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth"
 import SlackProvider from "next-auth/providers/slack"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import prisma from "@/lib/prisma"
 
 export const config: NextAuthConfig = {
   theme: {

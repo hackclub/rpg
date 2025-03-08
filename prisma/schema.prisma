@@ -21,6 +21,7 @@ model User {
   sessions      Session[]
   treasure      Int             @default(0)
   level         Int             @default(0)
+  inventory     String[]        
   attacking     Boolean         @default(false)
  
   createdAt DateTime @default(now())
@@ -71,4 +72,12 @@ model Boss {
   name      String
   desc      String
   health    String
+}
+
+model Item {
+  id        Int    @id @default(autoincrement())
+  name      String
+  desc      String
+  image     String
+  rarity    Int
 }
