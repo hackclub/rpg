@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthConfig } from "next-auth"
 import SlackProvider from "next-auth/providers/slack"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import prisma from "@/lib/prisma"
+import prisma, { setUserDefaultInventory } from "@/lib/prisma"
 
 export const config: NextAuthConfig = {
   theme: {
@@ -16,10 +16,17 @@ export const config: NextAuthConfig = {
       checks: ['nonce'],
     }),
   ],
-  callbacks: {
-    async session({session, token, user}) {
-    return { ...session }
+  events: {
+    async signIn({user, account, profile, isNewUser}) {
+      if (isNewUser){
+        setUserDefaultInventory(user.id!)
+      }
     }
+  },
+  callbacks: {
+    async session({session, token, user, trigger}) {  
+      return { ...session }
+    },
   },
 }
 

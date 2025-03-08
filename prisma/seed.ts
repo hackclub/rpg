@@ -1,34 +1,24 @@
 import prisma from '@/lib/prisma'
 import { Item } from "@/types/index"
-const inventoryData: Item[] = [
-    {
-        name: "Wooden sword",
-        desc: "A trusty weapon.",
-        image: "https://placehold.co/40x40",
-        rarity: 1
-    },
-    {
-        name: "Bow and arrow",
-        desc: "May your aim be as true as your heart is pure.",
-        image: "https://placehold.co/40x40",
-        rarity: 1
-    },
-    {
-        name: "Pure nail",
-        desc: "Fit for a bug.",
-        image: "https://placehold.co/40x40",
-        rarity: 3
-    }
-]
+import { inventoryData } from '@/lib/prisma'
 
 async function main(){
-    for (const u of inventoryData) {
-        const item = await prisma.item.create({
-          data: u,
-        })
-        console.log(`Created item with id: ${item.id}`)
+  const admin = await prisma.user.create({
+    data: {
+      name: "Admin",
+      email: "example@mail.com"
     }
-}
+  })
+
+  const newInventory = inventoryData.map((item: Item) => ({
+    ...item,
+    userId: admin.id
+  }))
+
+  const item = await prisma.item.createMany({
+      data: newInventory
+  })  
+  }
 
 await main()
   .then(async () => {

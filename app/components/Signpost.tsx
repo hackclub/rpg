@@ -1,7 +1,7 @@
 'use client'
 import { useSession } from "next-auth/react"
-import Sign from "../components/Sign"
-import StatPill from "./StatPill"
+import Sign from "@/components/common/Sign"
+import StatPill from "@/components/common/StatPill"
 
 const directory = [{
     name: "Campsite",

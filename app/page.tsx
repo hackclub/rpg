@@ -1,6 +1,6 @@
 import Image from "next/image";
 import SignInButton from "./components/SignIn";
-import Button from "./components/Button";
+import Button from "./components/common/Button";
 export default function Index() {
   return (
     <>
@@ -12,7 +12,6 @@ export default function Index() {
           <p className = "py-2">exciting placeholder text.</p>
           <div className = "block my-2" id = 'menu'>
             <SignInButton/>
-            <Button href = "/">CLICK HERE</Button>
           </div>
       </div>
     </>
