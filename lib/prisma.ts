@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { Item } from "@/types"
+import { Item, Boss } from "@/types"
  
 export const inventoryData: Item[] = [
     {
@@ -22,6 +22,17 @@ export const inventoryData: Item[] = [
     }
 ]
 
+export const bossData: Boss[] = [
+    {
+        name: "Generic Boss Name",
+        image: "https://placehold.co/800x600",
+        desc: "A ferocious beast, come to slay the adventurers who dare challenge it.",
+        strength: "Web development projects do half the damage :(",
+        weakness: "Game development projects do twice as much damage!",
+        health: 200,
+        maxHealth: 200,
+    }
+]
 
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
@@ -40,7 +51,7 @@ export async function setUserDefaultInventory(userId: string){
         
     )
     await prisma.item.createMany({
-        data: newInventory.splice(2)
+        data: newInventory.splice(0,2)
     })
 }
 

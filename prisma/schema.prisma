@@ -68,10 +68,14 @@ model VerificationToken {
 }
 
 model Boss { 
-  id        Int     @id @default(autoincrement())
-  name      String
-  desc      String
-  health    String
+  id         Int     @id @default(autoincrement())
+  name       String
+  image      String
+  desc       String
+  strength   String
+  weakness   String
+  health     Int
+  maxHealth  Int
 }
 
 model Item {

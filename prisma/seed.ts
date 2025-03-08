@@ -1,6 +1,13 @@
 import prisma from '@/lib/prisma'
-import { Item } from "@/types/index"
-import { inventoryData } from '@/lib/prisma'
+import { Item, Boss} from "@/types/index"
+import { inventoryData, bossData } from '@/lib/prisma'
+
+async function seedBosses(){
+  const bosses = await prisma.boss.createMany({
+    data: bossData.map((boss: Boss) => ({
+      ...boss,
+  }))
+})}
 
 async function main(){
   const admin = await prisma.user.create({
@@ -10,15 +17,15 @@ async function main(){
     }
   })
 
-  const newInventory = inventoryData.map((item: Item) => ({
-    ...item,
-    userId: admin.id
-  }))
-
   const item = await prisma.item.createMany({
-      data: newInventory
+      data: inventoryData.map((item: Item) => ({
+        ...item,
+        userId: admin.id
+      }))
   })  
-  }
+
+  seedBosses()
+}
 
 await main()
   .then(async () => {
