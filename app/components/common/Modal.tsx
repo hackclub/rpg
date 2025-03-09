@@ -17,7 +17,7 @@ export default function Modal({isOpen, setIsOpen, children, customClose, customC
                     <div className = "grow">
                         {children}
                     </div>
-                    <button className = "ml-auto" onClick={() => {setIsOpen(false); router.refresh(); customCloseAction}}>{customClose ? customClose : "Close"}</button>
+                    <button className = "pt-10 self-center lg:self-end" onClick={() => {setIsOpen(false); router.refresh(); customCloseAction}}>{customClose ? customClose : "Close"}</button>
                 </div>
             </div>
         : null }

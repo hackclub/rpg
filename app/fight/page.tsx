@@ -1,7 +1,7 @@
 'use client'
 import GeneralLayout from "../layouts/general";
 import StatPill from "@/components/common/StatPill";
-import AttackButton from "../components/Attack";
+import BattleButton from "../components/Battle";
 import useSWR from "swr";
 import { multiFetcher } from "@/lib/fetch";
 import { Boss } from "@/types";
@@ -43,7 +43,7 @@ export default function Fight(){
                         <p><b className = "text-accent">Strength: </b>{boss.strength}</p>
                         <p><b className = "text-accent">Weakness: </b>{boss.weakness}</p>
                     </div>
-                    <AttackButton/>
+                    <BattleButton/>
                 </div>
             </div>
             }

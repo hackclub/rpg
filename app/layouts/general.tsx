@@ -26,7 +26,7 @@ export default function GeneralLayout({children, title}: {children?: React.React
             </div>
             <div className = "col-span-full md:max-lg:col-span-3 md:col-span-5">
                 <h1 className = "text-5xl sm:text-6xl md:text-7xl">⟢ {title}</h1>
-                <div className = "py-8">
+                <div className = "py-16 sm:py-8">
                     {children}  
                 </div>
             </div>

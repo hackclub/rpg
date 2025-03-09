@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,25 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
- 
 model User {
-  id              String          @id @default(cuid())
-  name            String?
-  email           String          @unique
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  treasure        Int             @default(0)
-  experience      Int             @default(0)
-  inventory       Item[]          
-  attackSessions  Attack[]      
-  attacking       Boolean         @default(false)
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  treasure      Int       @default(0)
+  createdAt     DateTime  @default(now())
+  emailVerified DateTime?
+  image         String?
+  updatedAt     DateTime  @updatedAt
+  experience    Int       @default(0)
+  battling      Boolean   @default(false)
+  accounts      Account[]
+  battles       Battle[]
+  inventory     Item[]
+  sessions      Session[]
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -41,63 +36,59 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
 
-model Boss { 
-  id         Int     @id @default(autoincrement())
-  name       String
-  image      String
-  desc       String
-  strength   String
-  weakness   String
-  health     Int
-  maxHealth  Int
-  active     Boolean @default(false)
-
+model Boss {
+  id        Int     @id @default(autoincrement())
+  name      String
+  desc      String
+  image     String
+  maxHealth Int
+  health    Int
+  strength  String
+  weakness  String
+  active    Boolean @default(false)
 }
 
 model Item {
-  id          Int    @id @default(autoincrement())
-  user        User   @relation(fields: [userId], references: [id])
-  userId      String
-  name        String
-  desc        String
-  image       String
-  multiplier  Float  @default(1)
-  rarity      Int
+  id         Int    @id @default(autoincrement())
+  name       String
+  desc       String
+  image      String
+  rarity     Int
+  userId     String
+  multiplier Float  @default(1)
+  user       User   @relation(fields: [userId], references: [id])
 }
 
-model Attack {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String   
-  duration    Int      @default(0)
-  projectId   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Battle {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  duration  Int      @default(0)
+  projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }

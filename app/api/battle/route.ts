@@ -3,13 +3,13 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import prisma, { isCurrentlyAttacking, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
+import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
 
-async function onAttackCompletion(search: { where: { email: string } }, userId: string){
+async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session 
     const latestSession = await getLatestSessionDetails(userId)
-    const updateUserAttackingSession = await prisma.attack.update({
+    const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
           },
@@ -18,8 +18,8 @@ async function onAttackCompletion(search: { where: { email: string } }, userId: 
           },
         });
         
-    // 2. update boss hp according to attack session duration
-    const damageDoneLatestSession = await prisma.attack.findFirst(
+    // 2. update boss hp according to battle duration
+    const damageDoneLatestSession = await prisma.battle.findFirst(
         {
             where: {
                 id: latestSession!["id"]
@@ -33,11 +33,11 @@ async function onAttackCompletion(search: { where: { email: string } }, userId: 
             health: {decrement: Math.ceil(damageDoneLatestSession!["duration"]/60)}
         }
     })
-    // 3. update user's attacking status + add rewards
-    const setUserIsNotAttacking = await prisma.user.update({
+    // 3. update user's battling status + add rewards
+    const setUserIsNotBattling = await prisma.user.update({
         ...search, 
         data: {
-            attacking: false,
+            battling: false,
             treasure: { increment: Number((damageDoneLatestSession!["duration"]/6 * 10).toFixed(0))},
             experience: { increment: Number((damageDoneLatestSession!["duration"] * 10).toFixed(0))}
         }
@@ -56,22 +56,22 @@ export async function POST(request: NextRequest){
             email: session?.user.email!
         }
     }
-    // End attacking session
-    if ((await isCurrentlyAttacking(session?.user.email!))!["attacking"]){
-        onAttackCompletion(search, session?.user.id!)
+    // End battling session
+    if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
+        onBattleCompletion(search, session?.user.id!)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
 
     } else {
-        const res = await prisma.attack.create({
+        const res = await prisma.battle.create({
             data: {
                 userId: session?.user.id!,
                 projectId: projectId
             }
         })
-        const setUserIsCurrentlyAttacking = await prisma.user.update({
+        const setUserIsCurrentlyBattling = await prisma.user.update({
             ...search,
             data: {
-                attacking: true
+                battling: true
             }
         })
         return NextResponse.json({message: "Session - Created - True", status: "200"})
