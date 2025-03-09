@@ -6,19 +6,22 @@ export const inventoryData: Item[] = [
         name: "Wooden sword",
         desc: "A trusty weapon.",
         image: "https://placehold.co/40x40",
-        rarity: 1
+        rarity: 1,
+        multiplier: 1.0 
     },
     {
         name: "Bow and arrow",
         desc: "May your aim be as true as your heart is pure.",
         image: "https://placehold.co/40x40",
-        rarity: 1
+        rarity: 1,
+        multiplier: 1.1
     },
     {
         name: "Pure nail",
         desc: "Fit for a bug.",
         image: "https://placehold.co/40x40",
-        rarity: 3
+        rarity: 3,
+        multiplier: 2
     }
 ]
 
@@ -31,6 +34,7 @@ export const bossData: Boss[] = [
         weakness: "Game development projects do twice as much damage!",
         health: 200,
         maxHealth: 200,
+        active: true,
     }
 ]
 
@@ -82,6 +86,15 @@ export async function getLatestSessionDetails(userId: string){
         }
     })
     return latestSession
+}
+
+export async function getActiveBossDetails(){
+    const response = await prisma.boss.findFirst({
+        where: {
+            active: true
+        }
+    })
+    return response
 }
 
 export default prisma

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest){
     const query = request.nextUrl.searchParams.get("query")
     if (query === "currently"){
         const attackStatus = (await isCurrentlyAttacking(session?.user.email!))!
-        return NextResponse.json({message: attackStatus["attacking"], status: 200})    
+        return NextResponse.json(attackStatus)    
     } else if (query === "latest"){
         const response = await getLatestSessionDetails(session?.user.id!)
         return NextResponse.json(response)    

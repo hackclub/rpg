@@ -1,12 +1,33 @@
+'use client'
 import GeneralLayout from "../layouts/general";
 import StatPill from "@/components/common/StatPill";
-import prisma from "@/lib/prisma";
 import AttackButton from "../components/Attack";
+import useSWR from "swr";
+import { multiFetcher } from "@/lib/fetch";
+import { Boss } from "@/types";
+import Loading from "../components/common/Loading";
 
-export default async function Fight(){
-    const boss = (await prisma.boss.findFirst())!
+export default function Fight(){
+    const { data, error, isLoading } = useSWR(["/api/boss/status"], multiFetcher, {
+        refreshInterval: 250
+    })
+    if (error){
+        return ( 
+            <GeneralLayout title = "Error!">
+                {error.desc}
+            </GeneralLayout>
+        )
+    }
+    if (isLoading){
+        return (
+            <Loading/>
+        )
+    }
+    const boss = data![0] as Boss
+    
     return (
         <GeneralLayout title = "Fight!">
+            { data && 
             <div className = "flex flex-col lg:flex-row gap-7 bg-accent/20 p-4 my-8 md:my-0 rounded-sm">
                 <div className = "bg-gray-20 lg:w-5/12 rounded-sm flex flex-col gap-5 justify-center items-center">
                     <img src = {boss.image}/>
@@ -25,6 +46,7 @@ export default async function Fight(){
                     <AttackButton/>
                 </div>
             </div>
-        </GeneralLayout>
+            }
+        </GeneralLayout> 
     )
 }

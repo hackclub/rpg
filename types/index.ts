@@ -5,7 +5,8 @@ export type Item = {
     name: string,
     desc: string,
     image: string,
-    rarity: number
+    rarity: number,
+    multiplier: number,
 }
 
 export type Boss = {
@@ -17,4 +18,5 @@ export type Boss = {
     weakness: string,
     health: number,
     maxHealth: number
+    active: boolean
 }

@@ -1,25 +1,48 @@
 'use client'
 import Button from "@/components/common/Button"
-import Modal from "./common/Modal"
+import Modal from "@/components/common/Modal"
+import StatPill from "@/components/common/StatPill"
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { multiFetcher } from "@/lib/fetch"
+import Loading from "@/components/common/Loading"
+import { Boss } from "@/types"
+import { useRouter } from "next/navigation"
+
+function SuccessModal({isFinishedOpen, setIsFinishedOpen, data, bossHealth}: {isFinishedOpen: boolean, setIsFinishedOpen: (value: any) => void, data?: any, bossHealth: Boss}){
+    return (
+    <Modal isOpen={isFinishedOpen} setIsOpen={setIsFinishedOpen} customClose="CLAIM REWARDS">
+        <h1 className = "text-2xl md:text-5xl py-4">Battle Summary</h1>
+            wow you finished a session thanks chat
+            your session was {(data["duration"]/3600).toFixed(2) + " hours long (" + (data["duration"]/60).toFixed(2) + " minutes)"} 
+
+        <h2>Prizes</h2>
+        <div className = "flex flex-col flex-wrap gap-4">
+            <StatPill>{Math.ceil(data["duration"]/60)} damage done! <span className = "text-accent">Boss health is now {bossHealth["health"]} </span></StatPill>
+            <StatPill>+ {((data["duration"]/6) * 10).toFixed(0)} treasure </StatPill>
+            <StatPill>+ {(data["duration"]*10).toFixed(0)} experience</StatPill>
+        </div>
+    </Modal>
+
+)
+}
+
 
 export default function AttackButton(){
     const [ isOpen, setIsOpen ] = useState(false)
     const [ isFinishedOpen, setIsFinishedOpen ] = useState(false)
     const [ isAttacking, setIsAttacking ] = useState(false)
-    const { data, error, isLoading } = useSWR(["/api/attack/status?query=currently", "/api/attack/status?query=latest"], multiFetcher, {
+    const { data, error, isLoading } = useSWR(["/api/attack/status?query=currently", "/api/attack/status?query=latest", "/api/boss/status"], multiFetcher, {
+        keepPreviousData: true,
         refreshInterval: 250,
         onSuccess: (data) => {
-            console.log(data[1])
-          setIsAttacking(data[0]["message"])
+          setIsAttacking(data[0]["attacking"])
         }
     })
 
     useEffect(() => {
         if (data){
-          setIsAttacking(data[0]["message"])
+          setIsAttacking(data[0]["attacking"])
         }
       }, [data])
 
@@ -52,15 +75,7 @@ export default function AttackButton(){
          </Modal>
 
          {/* finish session modal */}
-         <Modal isOpen={isFinishedOpen} setIsOpen={setIsFinishedOpen}>
-         <h1 className = "text-2xl md:text-5xl py-4">Battle Summary</h1>
-             wow you finished a session thanks chat
-            your session was { data
-                                ? data[1]
-                                    ?  (data[1]["duration"]/3600).toFixed(2) + " hours long (" + (data[1]["duration"]/60).toFixed(2) + " minutes)"
-                                    : "[Something went wrong - no response to ?query=latest]" 
-                                : "[Something went wrong - no response to /api/attack/status]"} 
-         </Modal>
-         </>
+         { data && <SuccessModal isFinishedOpen={isFinishedOpen} setIsFinishedOpen={setIsFinishedOpen} data={data[1]} bossHealth={data[2]} /> }
+        </>
     )
 }
