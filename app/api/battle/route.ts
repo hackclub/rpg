@@ -7,15 +7,15 @@ import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDeta
 
 async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
-    // 1. update duration of attack session 
-    const latestSession = await getLatestSessionDetails(userId)
+    // 1. update duration of attack session and damage done in attack session
+    let latestSession = await getLatestSessionDetails(userId)
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
           },
           data: {
-            duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000 // duration of attack session in seconds
-          },
+            duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000, // duration of attack session in seconds
+            },
         });
         
     // 2. update boss hp according to battle duration
@@ -42,6 +42,17 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             experience: { increment: Number((damageDoneLatestSession!["duration"] * 10).toFixed(0))}
         }
     })
+    // 4. update damage done in the recent session
+    latestSession = await getLatestSessionDetails(userId) // refresh the info we have on hand
+    const updateUserDamageSession = await prisma.battle.update({
+        where: {
+            id: latestSession!["id"]
+          },
+        data: {
+            damage: Math.ceil(latestSession!["duration"]/60)
+        }
+    })
+
 }
 
 
@@ -65,6 +76,7 @@ export async function POST(request: NextRequest){
         const res = await prisma.battle.create({
             data: {
                 userId: session?.user.id!,
+                bossId: (await getActiveBossDetails())!["id"],
                 projectId: projectId
             }
         })

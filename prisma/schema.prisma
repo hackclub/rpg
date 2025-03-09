@@ -69,6 +69,7 @@ model Boss {
   health    Int
   strength  String
   weakness  String
+  battles   Battle[] // Battles that this boss has been involved in
   active    Boolean @default(false)
 }
 
@@ -85,8 +86,11 @@ model Item {
 
 model Battle {
   id        Int      @id @default(autoincrement())
+  bossId    Int
   userId    String
   duration  Int      @default(0)
+  damage    Int      @default(0) // damage done to the boss
+  boss      Boss     @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
   projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
