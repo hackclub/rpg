@@ -18,7 +18,8 @@
     "prisma": "^6.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-tooltip": "^5.28.0"
+    "react-tooltip": "^5.28.0",
+    "swr": "^2.3.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -34,5 +35,5 @@
   },
   "prisma": {
     "seed": "bun run prisma/seed.ts"
-    }
+  }
 }

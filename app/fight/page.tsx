@@ -1,7 +1,7 @@
 import GeneralLayout from "../layouts/general";
-import StatPill from "../components/common/StatPill";
-import Button from "../components/common/Button";
+import StatPill from "@/components/common/StatPill";
 import prisma from "@/lib/prisma";
+import AttackButton from "../components/Attack";
 
 export default async function Fight(){
     const boss = (await prisma.boss.findFirst())!
@@ -22,7 +22,7 @@ export default async function Fight(){
                         <p><b className = "text-accent">Strength: </b>{boss.strength}</p>
                         <p><b className = "text-accent">Weakness: </b>{boss.weakness}</p>
                     </div>
-                    <Button className = "mx-auto w-max">START ATTACKING</Button>
+                    <AttackButton/>
                 </div>
             </div>
         </GeneralLayout>

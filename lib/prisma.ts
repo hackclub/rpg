@@ -55,5 +55,33 @@ export async function setUserDefaultInventory(userId: string){
     })
 }
 
+export async function isCurrentlyAttacking(email: string){
+    const getAttackingStatus = await prisma.user.findFirst({
+        where: {
+            email: email
+        },
+        select: {
+            attacking: true
+        }
+    })
+    return (await getAttackingStatus)
+}
+
+export async function getLatestSessionDetails(userId: string){
+    const latestSession = await prisma.attack.findFirst({
+        where: {
+            userId: userId
+        },
+        orderBy: {
+        createdAt: 'desc', 
+        },
+        select: {
+            id: true,
+            duration: true,
+            createdAt: true,
+        }
+    })
+    return latestSession
+}
 
 export default prisma
