@@ -18,7 +18,8 @@ export default function GeneralLayout({children, title}: {children?: React.React
     return (
         <>
         { session.status === "authenticated" ?
-        <div className = "grid md:max-lg:grid-cols-5 md:grid-cols-7 gap-8 md:gap-20 ">
+        <>
+        <div className = "grid md:max-lg:grid-cols-5 md:grid-cols-7 gap-8 md:gap-20">
             <div className = "order-last md:order-first col-span-full md:col-span-2 *:-my-16 *:md:-my-24 *:sm:-my-30">
                 <div className = "sticky top-0 flex flex-col items-center justify-center align-middle sm:h-[100vh]">
                     <Signpost className = "static"/>
@@ -31,6 +32,7 @@ export default function GeneralLayout({children, title}: {children?: React.React
                 </div>
             </div>
         </div>
+        </>
         : session.status === "loading" 
         ? <Loading/> : <Loading/>
         }

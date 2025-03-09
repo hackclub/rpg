@@ -12,7 +12,7 @@ export default function Modal({isOpen, setIsOpen, children, customClose, customC
     return (
         <>
         { isOpen ? 
-            <div className = "bg-dark/80 absolute h-full w-full transition-all duration-300 ease-in-out sm:px-32 sm:py-12 md:px-64 md:py-28 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className = "z-60 bg-dark/80 border border-dark rounded-sm fixed h-screen min-h-screen w-full transition-all duration-300 ease-in-out sm:px-32 sm:py-12 md:px-48 md:py-28 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <div className = "z-50 bg-darker overflow-y-scroll size-full p-10 flex flex-col">
                     <div className = "grow">
                         {children}

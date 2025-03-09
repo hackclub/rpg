@@ -8,9 +8,9 @@ export default async function Home(){
         orderBy: {
             updatedAt: "desc"
         },
-        where: {
-            user: {
-                battling: false // user has completed the battle
+        where: { 
+            NOT: {
+                duration: 0 // session has a duration == session has finished
             }
         },
         select: {
@@ -31,14 +31,14 @@ export default async function Home(){
             <img className = "w-1/2 mx-auto p-4 rounded-lg" src = "/rpgfinal.png"/>
             <h2>Recent battles</h2>
             <div className = "flex flex-col gap-4"> 
-                { recentBattles.map((battle, index) => 
+                { recentBattles ? recentBattles.map((battle, index) => 
                 <LargePill key={index}> 
                     <div className = "flex flex-row gap-4">
                         <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
                         <div className = "grow">{battle.user.name} did {battle.damage} damage in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
                     </div>
                 </LargePill>
-                )}
+                ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}
                 </div>
         </GeneralLayout>
     )

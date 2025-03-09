@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=Metal+Mania&display=swap');
 @import "tailwindcss";
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -26,6 +25,10 @@
 
 h1, h2, h3 {
   font-family: Metal Mania, sans-serif;
+}
+
+.link {
+  @apply hover:underline hover:decoration-wavy hover:underline-offset-5 
 }
 
 h2 {

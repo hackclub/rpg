@@ -28,7 +28,7 @@ export default function Fight(){
     return (
         <GeneralLayout title = "Fight!">
             { data && 
-            <div className = "flex flex-col lg:flex-row gap-7 bg-accent/20 p-4 my-8 md:my-0 rounded-sm">
+            <div className = "flex flex-col lg:flex-row gap-7 bg-accent/20 border border-accent/50 p-4 my-8 md:my-0 rounded-sm">
                 <div className = "bg-gray-20 lg:w-5/12 rounded-sm flex flex-col gap-5 justify-center items-center">
                     <img src = {boss.image}/>
                     <div className = "mx-auto">

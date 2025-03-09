@@ -22,7 +22,7 @@ export default async function Leaderboard(){
 
     return (
         <GeneralLayout title = "Leaderboard">
-            Who's the best adventure in these lands?
+            Who's the best adventurer in these lands?
             <h2>Treasure</h2>
             { treasureLeaderboard.map((user, index) => 
                 <LargePill key={index}> 
