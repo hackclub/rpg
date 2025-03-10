@@ -11,16 +11,20 @@ export default function Items(){
         return <div>Loading</div>
     }
 
+    let items: Item[] = []
+    let inBattleStatus = null
+
     if (data){
-        const items = (data as any)[0]["inventory"]
-        const inBattleStatus = (data as any)[1]
+        items = (data as any)[0]["inventory"]
+        inBattleStatus = (data as any)[1]["battling"]
+    }
 
     return (
         <div className = "grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] justify-between py-4 gap-y-16 gap-16 flex-wrap">
             {items.map((item: Item, index: number) => (
                 <div key = {index} className = "">
                     <Tooltip id={item.name} className = "z-20"/>
-                    <div className = "bg-gray-300 border-2 p-1 col-span-1" data-tooltip-id={item.name} data-tooltip-content={item.desc + " " + "✩".repeat(item.rarity)}>
+                    <div className = "bg-gray-300 border-2 p-1 col-span-1" data-tooltip-id={item.name} data-tooltip-content={item.desc + " " + item.multiplier + "x multiplier. " + "✩".repeat(item.rarity)}>
                         <img className = "size-full" src = {item.image}/>
                     </div>
                     
@@ -47,6 +51,5 @@ export default function Items(){
                 </div>
             ))}
         </div>
-
     )
-}}
+}

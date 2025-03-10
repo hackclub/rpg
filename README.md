@@ -47,4 +47,4 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
     ```
 
 ## To do:
--[ ] resolve eslint errors
+- [ ] resolve eslint errors

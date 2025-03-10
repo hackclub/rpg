@@ -21,13 +21,13 @@ export default function GeneralLayout({children, title}: {children?: React.React
         <>
         <div className = "grid md:max-lg:grid-cols-5 md:grid-cols-7 gap-8 md:gap-20">
             <div className = "order-last md:order-first col-span-full md:col-span-2 *:-my-16 *:md:-my-24 *:sm:-my-30">
-                <div className = "sticky top-0 flex flex-col items-center justify-center align-middle sm:h-[100vh]">
+                <div className = "inline md:sticky top-0 md:flex flex-col items-center justify-center align-middle sm:h-[100vh]">
                     <Signpost className = "static"/>
                 </div>
             </div>
             <div className = "col-span-full md:max-lg:col-span-3 md:col-span-5">
                 <h1 className = "text-5xl sm:text-6xl md:text-7xl">⟢ {title}</h1>
-                <div className = "py-16 sm:py-8">
+                <div className = "py-8">
                     {children}  
                 </div>
             </div>

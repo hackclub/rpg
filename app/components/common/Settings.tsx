@@ -12,10 +12,10 @@ export function Settings(){
             </svg>
         </button>
         <Modal isOpen={settingsIsOpen} setIsOpen={setSettingsIsOpen}>
-            <h1 className = "text-2xl md:text-5xl py-4">Settings</h1>
+            <h1 className = "text-3xl md:text-5xl py-4">Settings</h1>
                 <div className = "flex flex-col gap-4 h-full">
                     <p>Settings are in development.</p>
-                    <p><span className = "text-accent">Build: </span></p>
+                    <p><span className = "text-accent">Commit: </span></p>
                     <p><span className = "text-accent">Repository: </span> <a className = "link" href = "https://github.com/phthallo/rpg">https://github.com/phthallo/rpg</a></p>
                     <p>A project by <span className = "text-accent"><a className = "link" href = "https://github.com/phthallo">@phthallo</a>.</span></p>
                 </div>

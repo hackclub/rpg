@@ -25,7 +25,7 @@ const directory = [{
 export default function Signpost({className}: {className: string}){
     const session = useSession();
     return (
-        <div className = {className}>
+        <div className = {`${className}`}>
             <img src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/01a7c6aa5aa33a6a13d6f8fadb293e72947ec813_image.png"/>
                 <h1 className ="text-3xl sm:text-5xl text-center">signpost</h1>
                 <div className = "py-4">

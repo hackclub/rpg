@@ -1,6 +1,7 @@
 import GeneralLayout from "../layouts/general"
 import LargePill from "../components/common/LargePill"
 import prisma from "@/lib/prisma"
+import { determineLevel } from "@/lib/stats"
 
 export default async function Home(){
     const currentBattles = await prisma.battle.findMany({
@@ -49,14 +50,14 @@ export default async function Home(){
             <img className = "w-1/2 mx-auto p-4 rounded-lg" src = "/rpgfinal.png"/>
 
             <div id = "current">
-                <h2>Current battles</h2>
-                <p>Adventurers currently on quests ⚔️</p>
+                <h2>Current Battles ⚔️ </h2>
+                <p>Adventurers currently on quests</p>
                 <div className = "flex flex-col gap-4 py-2"> 
                     { currentBattles.length > 0 ? currentBattles.map((battle: any, index: number) => 
                     <LargePill key={index}> 
                         <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
                             <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                            <div className = "grow"><span className ="text-accent">{battle.user.name} (LVL {Math.floor(battle.user.experience/1000)})</span> is battling right now! They're working on '{battle.projectId}'</div>
+                            <div className = "grow"><span className ="text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> is battling right now! They're working on '{battle.projectId}'</div>
                         </div>
                     </LargePill>
                     ) : <LargePill>No one is battling right now :{'('}</LargePill>}
@@ -64,14 +65,14 @@ export default async function Home(){
             </div>  
 
             <div id = "recent">
-                <h2>Recent battles</h2>
-                <p>Adventurers who have returned from quests 🏕️</p>
+                <h2>Recent Battles 🏕️</h2>
+                <p>Adventurers who have returned from quests</p>
                 <div className = "flex flex-col gap-4 py-2"> 
                     { recentBattles.length > 0 ? recentBattles.map((battle: any, index: number) => 
                     <LargePill key={index}> 
                         <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
                             <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                            <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {Math.floor(battle.user.experience/1000)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
+                            <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
                         </div>
                     </LargePill>
                     ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}
