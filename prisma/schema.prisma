@@ -74,14 +74,15 @@ model Boss {
 }
 
 model Item {
-  id         Int    @id @default(autoincrement())
-  name       String
-  desc       String
-  image      String
-  rarity     Int
-  userId     String
-  multiplier Float  @default(1)
-  user       User   @relation(fields: [userId], references: [id])
+  id            Int     @id @default(autoincrement())
+  name          String
+  desc          String
+  image         String
+  rarity        Int
+  userId        String
+  multiplier    Float   @default(1)
+  user          User    @relation(fields: [userId], references: [id])
+  userEquipped  Boolean @default(false)
 }
 
 model Battle {

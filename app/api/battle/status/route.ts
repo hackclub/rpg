@@ -1,5 +1,5 @@
 // GET /api/status
-// Returns whether the user is currently attacking / in a session.
+// Returns whether the user is currently attacking / in a session or information about the latest session.
 import { NextResponse, NextRequest } from "next/server"
 import { isCurrentlyBattling, getLatestSessionDetails } from "@/lib/prisma"
 import { auth } from "@/auth"

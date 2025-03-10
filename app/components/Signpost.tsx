@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react"
 import Sign from "@/components/common/Sign"
 import StatPill from "@/components/common/StatPill"
 import { Tooltip } from "react-tooltip"
+import { determineLevel } from "@/lib/stats"
 
 const directory = [{
     name: "Campsite",
@@ -42,7 +43,7 @@ export default function Signpost({className}: {className: string}){
                 </StatPill>
                     <StatPill>
                     <span data-tooltip-id="experience" data-tooltip-content={String(session.data?.user.experience) + " exp"}>
-                        LVL { Math.floor(session.data?.user.experience! / 1000) } 
+                        LVL { determineLevel(session.data?.user.experience!) } 
                         </span>
                     </StatPill>
                 <StatPill> 

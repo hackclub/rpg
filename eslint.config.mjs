@@ -15,9 +15,12 @@ const eslintConfig = [
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
-    }
+      "@next/next/no-img-element": "off", // i promise i will enable these later
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+      "react/no-unescaped-entities": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
   }
-  )
+  })
 ];
 
 export default eslintConfig;

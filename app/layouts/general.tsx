@@ -13,7 +13,7 @@ export default function GeneralLayout({children, title}: {children?: React.React
         if (session.status === "unauthenticated"){
             router.push("/unauthed")
         }
-    }, [session.status])
+    }, [session.status, router])
 
     return (
         <>

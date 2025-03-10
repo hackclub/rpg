@@ -24,7 +24,7 @@ export default async function Leaderboard(){
         <GeneralLayout title = "Leaderboard">
             Who's the best adventurer in these lands?
             <h2>Treasure</h2>
-            { treasureLeaderboard.map((user, index) => 
+            { treasureLeaderboard.map((user: any, index: number) => 
                 <LargePill key={index}> 
                     <div className = "flex sm:flex-row gap-5 w-full">
                     <span>{index + 1}</span> 

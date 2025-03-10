@@ -3,8 +3,26 @@ import LargePill from "../components/common/LargePill"
 import prisma from "@/lib/prisma"
 
 export default async function Home(){
+    const currentBattles = await prisma.battle.findMany({
+        take: 3,
+        orderBy: {
+            createdAt: "desc"
+        },
+        where: { 
+            AND: {
+                user: {
+                    battling: true
+                },
+                duration: 0 // duration == 0 means battle hsan't finished
+        }
+    }, 
+    select: {
+        user: true,
+        projectId: true
+    }})
+
     const recentBattles = await prisma.battle.findMany({
-        take: 5,
+        take: 3,
         orderBy: {
             updatedAt: "desc"
         },
@@ -19,7 +37,7 @@ export default async function Home(){
             duration: true,
             projectId: true
         }
-    })
+    })     
     return (
         <GeneralLayout title = "Campsite">
             <p>Descriptive generic body text introducing users to the basic mechanics.</p>
@@ -29,17 +47,36 @@ export default async function Home(){
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
             <img className = "w-1/2 mx-auto p-4 rounded-lg" src = "/rpgfinal.png"/>
-            <h2>Recent battles</h2>
-            <div className = "flex flex-col gap-4"> 
-                { recentBattles ? recentBattles.map((battle, index) => 
-                <LargePill key={index}> 
-                    <div className = "flex flex-row gap-4">
-                        <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                        <div className = "grow">{battle.user.name} did {battle.damage} damage in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
-                    </div>
-                </LargePill>
-                ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}
+
+            <div id = "current">
+                <h2>Current battles</h2>
+                <p>Adventurers currently on quests ⚔️</p>
+                <div className = "flex flex-col gap-4 py-2"> 
+                    { currentBattles.length > 0 ? currentBattles.map((battle: any, index: number) => 
+                    <LargePill key={index}> 
+                        <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
+                            <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
+                            <div className = "grow"><span className ="text-accent">{battle.user.name} (LVL {Math.floor(battle.user.experience/1000)})</span> is battling right now! They're working on '{battle.projectId}'</div>
+                        </div>
+                    </LargePill>
+                    ) : <LargePill>No one is battling right now :{'('}</LargePill>}
+                    </div>         
+            </div>  
+
+            <div id = "recent">
+                <h2>Recent battles</h2>
+                <p>Adventurers who have returned from quests 🏕️</p>
+                <div className = "flex flex-col gap-4 py-2"> 
+                    { recentBattles.length > 0 ? recentBattles.map((battle: any, index: number) => 
+                    <LargePill key={index}> 
+                        <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
+                            <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
+                            <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {Math.floor(battle.user.experience/1000)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
+                        </div>
+                    </LargePill>
+                    ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}
                 </div>
+            </div>
         </GeneralLayout>
     )
 }

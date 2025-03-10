@@ -4,8 +4,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
+import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
 
-async function onBattleCompletion(search: { where: { email: string } }, userId: string){
+async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
@@ -17,7 +18,7 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000, // duration of attack session in seconds
             },
         });
-        
+    console.log(updateUserBattlingSession)
     // 2. update boss hp according to battle duration
     const damageDoneLatestSession = await prisma.battle.findFirst(
         {
@@ -25,12 +26,13 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
                 id: latestSession!["id"]
             }
         })
+    console.log(determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier))
     const reduceBossHP = await prisma.boss.update({
         where: {
             id: (await getActiveBossDetails())!["id"]
         },
         data: {
-            health: {decrement: Math.ceil(damageDoneLatestSession!["duration"]/60)}
+            health: { decrement: determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier)}
         }
     })
     // 3. update user's battling status + add rewards
@@ -38,8 +40,8 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
         ...search, 
         data: {
             battling: false,
-            treasure: { increment: Number((damageDoneLatestSession!["duration"]/6 * 10).toFixed(0))},
-            experience: { increment: Number((damageDoneLatestSession!["duration"] * 10).toFixed(0))}
+            treasure: { increment: determineTreasure(damageDoneLatestSession!["duration"], weaponMultiplier)},
+            experience: { increment: determineExperience(damageDoneLatestSession!["duration"], weaponMultiplier)}
         }
     })
     // 4. update damage done in the recent session
@@ -49,18 +51,24 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             id: latestSession!["id"]
           },
         data: {
-            damage: Math.ceil(latestSession!["duration"]/60)
+            damage: determineDamage(latestSession!["duration"], weaponMultiplier)
         }
     })
 
 }
 
 
-
-
 export async function POST(request: NextRequest){
-    const projectId = (await request.json())["projectId"]
+    const body = await request.json()
+    const projectId = body["projectId"]
+    console.log("Sdssdfsdfsdfsd", body, "AAAAAAAAAAAAAAAAA")
+    const multiplier = body["multiplier"]
+    console.log("WWWWWWWW", multiplier, "ASKDSKDSLDKLSKDL:SKDL:SKL:DKLSD")
     const session = await auth();
+
+    if (!session){
+        return NextResponse.json({error: "Unauthed", status: 401})
+    }
 
     const search = {
         where: {
@@ -69,7 +77,7 @@ export async function POST(request: NextRequest){
     }
     // End battling session
     if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
-        onBattleCompletion(search, session?.user.id!)
+        onBattleCompletion(search, session?.user.id!, multiplier)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
 
     } else {

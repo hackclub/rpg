@@ -28,7 +28,23 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
    bunx prisma db seed
    ```
 
-7. Start the development server and visit `localhost:3000`.
+7. Start the development server, as well your Ngrok instance and visit your Ngrok URL[^1] in the browser.
    ```
    bun run dev
    ```
+
+[^1]: Necessary for testing auth
+
+## Docker
+1. Clone the repository.
+    ```
+    git clone https://github.com/phthallo/rpg 
+    ```
+
+3. Build and start the container.
+    ```
+    docker compose up -d --build web
+    ```
+
+## To do:
+-[ ] resolve eslint errors
