@@ -18,7 +18,6 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000, // duration of attack session in seconds
             },
         });
-    console.log(updateUserBattlingSession)
     // 2. update boss hp according to battle duration
     const damageDoneLatestSession = await prisma.battle.findFirst(
         {
@@ -26,7 +25,6 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
                 id: latestSession!["id"]
             }
         })
-    console.log(determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier))
     const reduceBossHP = await prisma.boss.update({
         where: {
             id: (await getActiveBossDetails())!["id"]
@@ -61,9 +59,7 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
 export async function POST(request: NextRequest){
     const body = await request.json()
     const projectId = body["projectId"]
-    console.log("Sdssdfsdfsdfsd", body, "AAAAAAAAAAAAAAAAA")
     const multiplier = body["multiplier"]
-    console.log("WWWWWWWW", multiplier, "ASKDSKDSLDKLSKDL:SKDL:SKL:DKLSD")
     const session = await auth();
 
     if (!session){

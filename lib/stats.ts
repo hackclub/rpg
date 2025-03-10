@@ -8,17 +8,14 @@ export function determineLevel(xp: number){
 }
 
 export function determineDamage(duration: number, multiplier: number){
-    console.log(`Battled for ${duration}; weapon multiplier ${multiplier}; damage done ${Math.ceil((duration * multiplier)/60)}`)
     return Math.ceil((duration * multiplier)/60)
 }
 
 
 export function determineTreasure(duration: number, multiplier: number){
-    console.log(`Battled for ${duration}; weapon multiplier ${multiplier}; treasure earned ${(duration/6 * 10 * multiplier).toFixed(0)}`)
     return Number((duration/6 * 10 * multiplier).toFixed(0))
 }
 
 export function determineExperience(duration: number, multiplier: number){
-    console.log(`Battled for ${duration}; weapon multiplier ${multiplier}; experienced earned ${(duration * 10 * multiplier).toFixed(0)}`)
     return Number((duration * 10 * multiplier).toFixed(0))
 }
