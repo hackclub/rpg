@@ -29,10 +29,14 @@ h1, h2, h3 {
 
 
 select {
-  @apply w-full border border-black rounded-sm bg-accent/20 p-2
+  @apply w-full border border-accent rounded-sm bg-accent/20 p-2
 }
 option { 
   @apply w-full
+}
+
+input {
+  @apply border border-accent rounded-sm p-2 bg-accent/20
 }
 
 .link {

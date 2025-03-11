@@ -21,7 +21,14 @@ export const inventoryData: Item[] = [
         desc: "Fit for a bug.",
         image: "https://placehold.co/40x40",
         rarity: 3,
-        multiplier: 2
+        multiplier: 1.3
+    },
+    {
+        name: "Rocket Propelled Grenade",
+        desc: "What else would RPG stand for?",
+        image: "https://placehold.co/40x40",
+        rarity: 3,
+        multiplier: 1.4
     }
 ]
 
@@ -87,6 +94,19 @@ export async function getLatestSessionDetails(userId: string){
         }
     })
     return latestSession
+}
+
+export async function getCurrentBattleDetails(){
+    const response = await prisma.battle.findFirst({
+        where: {
+            user:
+                { battling: true}
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+    return response
 }
 
 export async function getActiveBossDetails(){
