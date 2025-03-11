@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
@@ -7,5 +7,9 @@ declare module "next-auth" {
       attacking?: boolean;
       experience?: number;
     } & DefaultSession["user"];
+  }
+
+  export interface User extends DefaultUser() {
+    providerAccountId: string
   }
 }

@@ -20,12 +20,21 @@ export const config: NextAuthConfig = {
     async signIn({user, account, profile, isNewUser}) {
       if (isNewUser){
         setUserDefaultInventory(user.id!)
+        // manually assign slack id because no jwt
+         await prisma.user.update({
+           where: {
+             id: user.id!
+           },
+           data: {
+             providerAccountId: profile?.sub!
+           }
+         })
       }
     }
   },
   callbacks: {
     async session({session, token, user, trigger}) {  
-      return { ...session }
+      return { ...session, providerAccountId: user.providerAccountId }
     },
   },
 }

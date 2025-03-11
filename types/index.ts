@@ -20,3 +20,12 @@ export type Boss = {
     maxHealth: number
     active: boolean
 }
+
+export type Project = {
+    created_at: string,
+    human_readable_last_heartbeat_at: string,
+    id: string,
+    last_heartbeat_at: string,
+    name: string,
+    urlencoded_name: string
+}

@@ -5,10 +5,11 @@ import StatPill from "@/components/common/StatPill"
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { multiFetcher } from "@/lib/fetch"
-import { Boss } from "@/types"
+import { Boss, Project } from "@/types"
 import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
 import Items from "./ItemInventory"
 import { Battle } from "@prisma/client"
+import { useSession } from "next-auth/react"
 
 const battleCompleteFlavourText = [
     "Returning triumphant from your battle against $BOSSNAME, you survey your rewards.",
@@ -20,10 +21,13 @@ export default function BattleButton(){
     const [ isFinishedOpen, setIsFinishedOpen ] = useState(false)
     const [ isBattling, setIsBattling ] = useState(false)
     const [ weaponMultiplier, setWeaponMultiplier ] = useState(1)
-    const urls = ["/api/battle/status?query=currently", "/api/battle/status?query=latest", "/api/boss/status"]
+    const [ selectedProject, setSelectedProject ] = useState("")
+    const session = useSession()
+    const urls = ["/api/battle/status?query=currently", "/api/battle/status?query=latest", "/api/boss/status", `https://waka.hackclub.com/api/compat/wakatime/v1/users/${session.data?.user.providerAccountId}/stats/last_30_days`]
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
         refreshInterval:  250,
         onSuccess: (data) => {
+            console.log(data)
           setIsBattling(data[0]["battling"])
         }
     })
@@ -34,9 +38,17 @@ export default function BattleButton(){
         }
       }, [data])
 
+    let projects
+    if (isLoading){
+        return <div>Loading...</div>
+    }
+    if (data){
+        projects = data[3]["data"]["projects"]
+    }
+
     async function handleBattleStart(projectId: string){
         let getCurrentEquippedWeapon = (await fetch("/api/inventory/status?query=equipped", {cache: "no-store"}).then(r=> r.json()))[0]
-        let multiplier = getCurrentEquippedWeapon["multiplier"]
+        let multiplier = getCurrentEquippedWeapon ? getCurrentEquippedWeapon["multiplier"] : 1
         const r = fetch("/api/battle", { 
             method: "POST", 
             body: JSON.stringify(
@@ -59,10 +71,15 @@ export default function BattleButton(){
         {/* start session modal */}
          <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
             <h1 className = "text-2xl md:text-5xl py-4">Start adventuring</h1>
-            <div className = "text-base sm:max-lg:text-sm grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className = "text-base sm:max-lg:text-sm grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className = "col-span-1">
                     <p className = "font-bold text-accent">What project are you working on?</p>
-                    <p>WakaTime dropdown modal + option for not listed in wakatime w/ custom text -{'>'} store this in projects</p>
+                    <select name = "project" id="project">
+                        {projects && projects.map((project: Project, index: number) => 
+                            <option key={index} value = {project.name}>{project.name}</option>
+                        )}
+                        <option value="other">Other project not listed here</option>
+                    </select>
                 </div>
                 <div className = "col-span-1">
                 <p className = "font-bold text-accent">Equip a weapon:</p>

@@ -27,6 +27,14 @@ h1, h2, h3 {
   font-family: Metal Mania, sans-serif;
 }
 
+
+select {
+  @apply w-full border border-black rounded-sm bg-accent/20 p-2
+}
+option { 
+  @apply w-full
+}
+
 .link {
   @apply hover:underline hover:decoration-wavy hover:underline-offset-5 
 }

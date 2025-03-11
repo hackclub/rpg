@@ -50,6 +50,7 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 export async function setUserDefaultInventory(userId: string){
     const newInventory = inventoryData.map((item: Item) => ({
         ...item,
+        userEquipped: false,
         userId: userId
     })
         

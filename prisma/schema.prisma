@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  treasure      Int       @default(0)
-  createdAt     DateTime  @default(now())
-  emailVerified DateTime?
-  image         String?
-  updatedAt     DateTime  @updatedAt
-  experience    Int       @default(0)
-  battling      Boolean   @default(false)
-  accounts      Account[]
-  battles       Battle[]
-  inventory     Item[]
-  sessions      Session[]
+  id                  String    @id @default(cuid())
+  providerAccountId   String?
+  email               String    @unique
+  name                String?
+  treasure            Int       @default(0)
+  createdAt           DateTime  @default(now())
+  emailVerified       DateTime?
+  image               String?
+  updatedAt           DateTime  @updatedAt
+  experience          Int       @default(0)
+  battling            Boolean   @default(false)
+  accounts            Account[]
+  battles             Battle[]
+  inventory           Item[]
+  sessions            Session[]
 }
 
 model Account {
