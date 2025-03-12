@@ -40,8 +40,8 @@ export default function Fight(){
                         <h2 className = "mt-0">{boss.name}</h2>
                         <p>{boss.desc}</p>
                         <img className = "mx-auto h-4 md:h-8 my-3" src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/91b633bcae556a5d55141fcb9fcc85ae80a85a8f_ccdiv-removebg-preview.png"/>
-                        <p><b className = "text-accent">Strength: </b>{boss.strength}</p>
-                        <p><b className = "text-accent">Weakness: </b>{boss.weakness}</p>
+                        <p><b className = "text-accent">Strength: </b>{boss.strength} projects do half damage :{'('}</p>
+                        <p><b className = "text-accent">Weakness: </b>{boss.weakness} projects do double damage!</p>
                     </div>
                     <BattleButton/>
                 </div>

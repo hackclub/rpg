@@ -19,7 +19,7 @@ export default async function Home(){
     }, 
     select: {
         user: true,
-        projectId: true
+        project: true
     }})
 
     const recentBattles = await prisma.battle.findMany({
@@ -36,9 +36,11 @@ export default async function Home(){
             user: true,
             damage: true,
             duration: true,
-            projectId: true
+            project: true
         }
     })     
+    console.log(currentBattles)
+
     return (
         <GeneralLayout title = "Campsite">
             <p>Descriptive generic body text introducing users to the basic mechanics.</p>
@@ -57,7 +59,7 @@ export default async function Home(){
                     <LargePill key={index}> 
                         <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
                             <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                            <div className = "grow"><span className ="text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> is battling right now! They're working on '{battle.projectId}'</div>
+                            <div className = "grow"><span className ="text-accent">{battle.user.name!} (LVL {determineLevel(battle.user.experience)})</span> is battling right now! They're working on '{battle.project.name}'</div>
                         </div>
                     </LargePill>
                     ) : <LargePill>No one is battling right now :{'('}</LargePill>}
@@ -72,7 +74,7 @@ export default async function Home(){
                     <LargePill key={index}> 
                         <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
                             <img className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                            <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.projectId}'</div>
+                            <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.project.name}'</div>
                         </div>
                     </LargePill>
                     ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}

@@ -4,6 +4,7 @@ import { Item } from '@prisma/client';
 import useSWR from 'swr';
 import Button from '@/components/common/Button';
 import { fetcher, multiFetcher } from '@/lib/fetch';
+import { FormEvent } from 'react';
 
 export default function Items(){
     const { data, error, isLoading, mutate } = useSWR(["/api/inventory/status?query=all", "/api/battle/status?query=currently"], multiFetcher)
@@ -40,13 +41,13 @@ export default function Items(){
                              </span>
                             : item.userEquipped 
                                 ? <Button className = "mx-auto text-xs" disabled={true}>EQUIPPED</Button>
-                                : <Button onClick={async () => {
-                                        await fetch("/api/inventory", {
+                                : <Button form="_unused" onClickAction={ async (event: FormEvent<HTMLInputElement>) => {
+
+                                    await fetch("/api/inventory", {
                                             method: "POST", 
                                             body: JSON.stringify({name: item.name})}); 
                                             mutate()}}>EQUIP</Button>
                             }
-
                     </div>
                 </div>
             ))}

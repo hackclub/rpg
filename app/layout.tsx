@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { Settings } from "@/components/common/Settings";
+import { Info } from "@/app/components/common/Info";
 
 export const metadata: Metadata = {
   title: "RPG",
@@ -13,7 +13,7 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
     <html lang="en">
       <SessionProvider>
         <body className = "bg-dark">
-          <Settings/>
+          <Info/>
             <div className = "*:min-h-screen max-h-full bg-dark bg-[url(/bg.svg)] *:p-12 *:md:p-24 *:sm:p-30 inset-shadow-black vignette z-20">
             {children}
             </div>

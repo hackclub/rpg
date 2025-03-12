@@ -10,8 +10,8 @@ export default function SignInButton(){
     return (
         <>
         { session.status === "authenticated" 
-            ? <Button onClick={() => router.push("/campsite")}>START</Button>
-            : <Button onClick={() => signIn("slack", {callbackUrl: "/campsite"})}>SIGN IN</Button>
+            ? <Button onClickAction={() => router.push("/campsite")}>START</Button>
+            : <Button onClickAction={() => signIn("slack", {callbackUrl: "/campsite"})}>SIGN IN</Button>
         }
         </>
     )

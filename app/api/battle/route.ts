@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
 import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
 
-async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number){
+async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number, projectType: string){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
@@ -25,9 +25,10 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
                 id: latestSession!["id"]
             }
         })
+    const currentBossData = (await getActiveBossDetails())!
     const reduceBossHP = await prisma.boss.update({
         where: {
-            id: (await getActiveBossDetails())!["id"]
+            id: currentBossData["id"]
         },
         data: {
             health: { decrement: determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier)}
@@ -58,8 +59,10 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
 
 export async function POST(request: NextRequest){
     const body = await request.json()
-    const projectId = body["projectId"]
+    const projectName = body["projectName"] 
     const multiplier = body["multiplier"]
+    const projectType = body["projectType"]
+    console.log("api route battle", projectName, multiplier, projectType)
     const session = await auth();
 
     if (!session){
@@ -73,15 +76,22 @@ export async function POST(request: NextRequest){
     }
     // End battling session
     if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
-        onBattleCompletion(search, session?.user.id!, multiplier)
+        onBattleCompletion(search, session?.user.id!, multiplier, projectType)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
 
     } else {
+        // idfk get the project id from name 
+        const actualProjectId = await prisma.project.findFirst({
+            where: {
+                    userId: session?.user.id,
+                    name: projectName
+                }
+        })
         const res = await prisma.battle.create({
             data: {
                 userId: session?.user.id!,
                 bossId: (await getActiveBossDetails())!["id"],
-                projectId: projectId
+                projectId: actualProjectId!["id"],
             }
         })
         const setUserIsCurrentlyBattling = await prisma.user.update({
