@@ -28,7 +28,7 @@ export default async function Leaderboard(){
                 <LargePill key={index}> 
                     <div className = "flex sm:flex-row gap-5 w-full">
                     <span>{index + 1}</span> 
-                    <span className = "flex flex-row gap-2"><img className = "align-middle size-5 inline rounded-full" src = {user.image!}/>{user.name}</span> 
+                    <span className = "flex flex-row gap-2"><img alt={`${user.name}'s profile picture`} className = "align-middle size-5 inline rounded-full" src = {user.image!}/>{user.name}</span> 
                     <span className = "ml-auto">{user.treasure} t<span className = "hidden sm:inline">reasure</span></span>
                     </div>
                 </LargePill>

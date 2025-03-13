@@ -68,8 +68,8 @@ export default function BattleButton(){
         const customProject = String(formData.get("customProject"))
         const projectType = String(formData.get("type"))
         
-        let getCurrentEquippedWeapon = (await fetch("/api/inventory/status?query=equipped", {cache: "no-store"}).then(r=> r.json()))[0]
-        let getBossStats = (await fetch("/api/boss/status").then(r=>r.json()))
+        const getCurrentEquippedWeapon = (await fetch("/api/inventory/status?query=equipped", {cache: "no-store"}).then(r=> r.json()))[0]
+        const getBossStats = (await fetch("/api/boss/status").then(r=>r.json()))
 
         let multiplier
 

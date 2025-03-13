@@ -13,7 +13,7 @@ export const config: NextAuthConfig = {
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID!,
       clientSecret: process.env.SLACK_CLIENT_SECRET!,
-      checks: ['nonce'],
+      checks: ['pkce', 'nonce'],
     }),
   ],
   events: {

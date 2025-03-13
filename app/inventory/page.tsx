@@ -1,13 +1,16 @@
 import GeneralLayout from "@/app/layouts/general";
-import prisma from "@/lib/prisma";
-import Items from "../components/ItemInventory";
+import Items from "@/components/ItemInventory";
+import Shop from "@/components/Shop";
 import { auth } from "@/auth";
-
+import StatPill from "../components/common/StatPill";
 export default async function Inventory(){
+    const session = await auth();
     return (
         <GeneralLayout title = "Inventory">
-            Inventory items go here. Also, treasure counts and such.
+            You have <StatPill className = "inline">{session?.user.treasure}</StatPill> treasure.
+            It's dangerous to go alone, take these!
             <Items/>
+            <Shop/>
         </GeneralLayout>
     )
 }

@@ -26,7 +26,7 @@ export default function Items(){
                 <div key = {index} className = "">
                     <Tooltip id={item.name} className = "z-20"/>
                     <div className = "bg-gray-300 border-2 p-1 col-span-1" data-tooltip-id={item.name} data-tooltip-content={item.desc + " " + item.multiplier + "x multiplier. " + "✩".repeat(item.rarity)}>
-                        <img className = "size-full" src = {item.image}/>
+                        <img alt={`${item.name} image`} className = "size-full" src = {item.image}/>
                     </div>
                     
                     <div className = "my-2">
