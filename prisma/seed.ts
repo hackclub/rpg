@@ -2,13 +2,6 @@ import prisma from '@/lib/prisma'
 import { Item, Boss} from "@/types/index"
 import { inventoryData, bossData } from '@/lib/prisma'
 
-async function seedBosses(){
-  const bosses = await prisma.boss.createMany({
-    data: bossData.map((boss: Boss) => ({
-      ...boss,
-  }))
-})}
-
 async function main(){
   const userCount = await prisma.user.findMany()
   if (!userCount.length){
@@ -27,7 +20,12 @@ async function main(){
         }))
     })  
 
-    seedBosses()
+    const bosses = await prisma.boss.createMany({
+      data: bossData.map((boss: Boss) => ({
+        ...boss,
+        userId: admin.id
+    }))})
+    
   }
 }
 

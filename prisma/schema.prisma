@@ -19,6 +19,7 @@ model User {
   updatedAt           DateTime  @updatedAt
   experience          Int       @default(0)
   battling            Boolean   @default(false)
+  bossesSlain         Boss[]
   accounts            Account[]
   battles             Battle[]
   inventory           Item[]
@@ -72,7 +73,9 @@ model Boss {
   strength  String
   weakness  String
   battles   Battle[] // Battles that this boss has been involved in
-  active    Boolean @default(false)
+  userId    String
+  slainBy   User    @relation(fields: [userId], references: [id])
+  active    Boolean  @default(false)
 }
 
 model Item {

@@ -8,6 +8,12 @@ import { determineLevel } from "@/lib/stats";
 
 export async function LoadCurrentBoss(){
     const activeBoss = (await getActiveBossDetails())!;
+
+    if (!activeBoss){
+        return (
+            <div>No bosses active!</div>
+        )
+    }
     return (
         <>
         <Suspense fallback={<div>loading</div>}>

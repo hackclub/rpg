@@ -32,7 +32,7 @@ export const inventoryData: Item[] = [
     }
 ]
 
-export const bossData: Boss[] = [
+export const bossData = [
     {
         name: "Generic Boss Name",
         image: "https://placehold.co/800x600",
@@ -113,6 +113,18 @@ export async function getActiveBossDetails(){
     const response = await prisma.boss.findFirst({
         where: {
             active: true
+        }
+    })
+    return response
+}
+
+export async function getAllBossDetails(){
+    const response = await prisma.boss.findMany({
+        include: {
+            slainBy: true
+        },
+        orderBy: {
+            id: "desc"
         }
     })
     return response

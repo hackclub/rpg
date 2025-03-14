@@ -1,3 +1,4 @@
+import { User } from "@prisma/client"
 export type Item = {
     id?: number,
     user?: string,
@@ -17,8 +18,9 @@ export type Boss = {
     strength: string,
     weakness: string,
     health: number,
-    maxHealth: number
-    active: boolean
+    maxHealth: number,
+    active: boolean,
+    slainBy?: User,
 }
 
 export type Project = {
