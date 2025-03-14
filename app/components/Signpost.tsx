@@ -38,7 +38,7 @@ export default function Signpost({className}: {className: string}){
                 <Tooltip id="experience"/>
 
                 <StatPill>
-                    <img src = {session.data?.user.image!} className="inline size-4 rounded-full"/>
+                    <img alt={`${session.data?.user.name}'s profile picture`}src = {session.data?.user.image!} className="inline size-4 rounded-full"/>
                     { session.data?.user.name } 
                 </StatPill>
                     <StatPill>
