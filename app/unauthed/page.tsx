@@ -1,4 +1,4 @@
-import SignInButton from "../components/SignIn"
+import SignInButton from "@/components/SignIn"
 export default function Unauthed(){
     return (
         <div className = "h-screen w-screen flex flex-col items-center justify-center">

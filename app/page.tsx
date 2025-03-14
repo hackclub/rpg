@@ -1,4 +1,4 @@
-import SignInButton from "./components/SignIn";
+import SignInButton from "@/components/SignIn";
 export default function Index() {
   return (
     <>

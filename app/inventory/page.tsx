@@ -7,8 +7,12 @@ export default async function Inventory(){
     const session = await auth();
     return (
         <GeneralLayout title = "Inventory">
-            You have <StatPill className = "inline">{session?.user.treasure}</StatPill> treasure.
-            It's dangerous to go alone, take these!
+            <p>
+                You have <StatPill className = "inline">{session?.user.treasure}</StatPill> treasure.
+            </p>
+            <p>
+                It's dangerous to go alone, take these!
+            </p>
             <Items/>
             <Shop/>
         </GeneralLayout>
