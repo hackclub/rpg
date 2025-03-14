@@ -10,22 +10,26 @@ async function seedBosses(){
 })}
 
 async function main(){
-  const admin = await prisma.user.create({
-    data: {
-      name: "Admin",
-      email: "example@mail.com",
-      providerAccountId: "example"
-    }
-  })
 
-  const item = await prisma.item.createMany({
-      data: inventoryData.map((item: Item) => ({
-        ...item,
-        userId: admin.id
-      }))
-  })  
+  const userCount = await prisma.user.findMany()
+  if (!userCount){
+    const admin = await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: "example@mail.com",
+        providerAccountId: "example"
+      }
+    })
 
-  seedBosses()
+    const item = await prisma.item.createMany({
+        data: inventoryData.map((item: Item) => ({
+          ...item,
+          userId: admin.id
+        }))
+    })  
+
+    seedBosses()
+  }
 }
 
 await main()
