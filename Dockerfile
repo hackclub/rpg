@@ -12,7 +12,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . . 
-RUN bun prisma generate --no-engine
+RUN bun prisma generate
 RUN bun run build
 
 FROM base AS runner
