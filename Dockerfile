@@ -12,8 +12,10 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . . 
-RUN bun prisma migrate deploy
-RUN bun prisma generate
+RUN bun prisma migrate deploy && \
+    bun prisma generate && \
+    bun prisma db seed
+
 RUN bun run build
 
 FROM base AS runner
