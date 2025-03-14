@@ -12,18 +12,18 @@ export default async function Home(){
         orderBy: {
             createdAt: "desc"
         },
-        where: { 
-            AND: {
+        where: {
                 user: {
                     battling: true
                 },
                 duration: 0 // duration == 0 means battle hsan't finished
-        }
-    }, 
+        },
     select: {
         user: true,
         project: true
     }})
+
+    console.log(currentBattles)
 
     const recentBattles = await prisma.battle.findMany({
         take: 3,

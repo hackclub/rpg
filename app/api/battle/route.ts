@@ -10,7 +10,6 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
-    console.log(latestSession)
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
@@ -63,7 +62,6 @@ export async function POST(request: NextRequest){
     const projectName = body["projectName"] 
     const multiplier = body["multiplier"]
     const projectType = body["projectType"]
-    console.log("api route battle", projectName, multiplier, projectType)
     const session = await auth();
 
     if (!session){
