@@ -10,6 +10,7 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
+    console.log(latestSession)
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
