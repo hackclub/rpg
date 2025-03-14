@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
-const path = require('path')
 const nextConfig: NextConfig = {
   /* config options here */
-  output: "standalone",
+  /* output: "standalone", */
   experimental: {
     turbo: {
       resolveAlias: {

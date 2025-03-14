@@ -10,9 +10,8 @@ async function seedBosses(){
 })}
 
 async function main(){
-
   const userCount = await prisma.user.findMany()
-  if (!userCount){
+  if (!userCount.length){
     const admin = await prisma.user.create({
       data: {
         name: "Admin",

@@ -25,7 +25,7 @@ export default function BattleButton(){
     const [ selectedProject, setSelectedProject ] = useState("")
     const [ customProject, setCustomProject ] = useState("")
     const [ projectType, setProjectType ] = useState("")
-    const [ projectEffect, setProjectEffect ] = useState("none")
+    const [ projectEffect, setProjectEffect ] = useState("")
     const session = useSession()
     const urls = [
         "/api/battle/status?query=currently", 
@@ -78,9 +78,9 @@ export default function BattleButton(){
         } else {
             multiplier = getCurrentEquippedWeapon["multiplier"]
         }
-
         if (getBossStats["weakness"] == projectType){
             multiplier *= 2
+            console.log("matches")
             setProjectEffect("weakness")
 
         } else if (getBossStats["strength"] == projectType){
@@ -89,7 +89,7 @@ export default function BattleButton(){
         }
 
         const projectToDB = selectedProject !== "_other" ? selectedProject.replace(/[^a-zA-Z0-9-]/g, '') : customProject.replace(/[^a-zA-Z0-9-]/g, '')
-        const createProject = fetch("/api/project", {
+        const createProject = await fetch("/api/project", {
                 method: "POST",
                 body: JSON.stringify(
                     {
@@ -99,7 +99,8 @@ export default function BattleButton(){
                 )
             }
         )
-        const r = fetch("/api/battle", { 
+
+        const r = await fetch("/api/battle", { 
             method: "POST", 
             body: JSON.stringify(
                 {
@@ -120,14 +121,14 @@ export default function BattleButton(){
                 ? <Button>Loading...</Button>
                 : isBattling 
                     ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle", { method: "POST", body: JSON.stringify({multiplier: weaponMultiplier, projectType: projectType})}); setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
-                    : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true)}} >START BATTLE</Button>
+                    : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}} >START BATTLE</Button>
             }
         </div>
         {/* start session modal */}
          <Modal isOpen={isOpen} setIsOpen={setIsOpen} customCloseAction={clearStates}>
             <h1 className = "text-2xl md:text-5xl py-4">Start adventuring</h1>
             <div className = "text-base sm:max-lg:text-sm grid-cols-1 lg:grid-cols-2">
-            <Form id="battleStats" className = "grid grid-cols-1 lg:grid-cols-2 gap-8" action="javascript:void(0);" onSubmit={(e) => { handleBattleStart(e) }}>
+            <Form id="battleStats" className = "lg:grid lg:grid-cols-2 gap-8" action="javascript:void(0);" onSubmit={(e) => { handleBattleStart(e) }}>
                 <div className = "col-span-1 flex flex-col gap-2">
                         <div className = "flex flex-col gap-2">
                             <label htmlFor="project" className = "font-bold text-accent">What project are you working on?</label>
@@ -165,7 +166,7 @@ export default function BattleButton(){
                         <div className = "col-span-2">
                             { selectedProject === "_select" ||  !selectedProject || ( selectedProject == "_other" && !customProject) || !projectType
                             ? <Button disabled={true} className = "w-max mx-auto">SELECT A PROJECT</Button>
-                            : <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto">CLICK TO START</Button>
+                            : <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto" onClickAction={async () => {mutate()}}>CLICK TO START</Button>
                         }
                         </div>
                     </Form>
@@ -204,7 +205,7 @@ function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {stat
             <h2>Prizes</h2>
             <div className = "flex flex-col flex-wrap gap-4 items-center lg:items-start">
                 <div className = "flex flex-row gap-4">
-                    <StatPill>{damage} damage done! 
+                    <StatPill>{damage} damage done!
                     </StatPill>
                     <StatPill>
                     <span className = "text-accent font-bold">Boss HP: {boss["health"]}</span>
@@ -212,7 +213,7 @@ function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {stat
                             ? <span>{' -- '} Weak attack... <span className = "text-accent">{states.projectType}</span> projects do half damage :{'('}</span>
                             : states.projectEffect == "weakness"
                                 ? <span>{' -- '} Very effective! <span className = "text-accent">{states.projectType}</span> projects do double damage!</span>
-                                : null
+                                : null  /* known issue: strengths/weaknesses do not save if you navigate away from the attack page */
                         }
                     </StatPill>
                     </div>

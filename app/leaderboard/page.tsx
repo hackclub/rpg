@@ -1,8 +1,10 @@
 import GeneralLayout from "../layouts/general";
 import LargePill from "@/components/common/LargePill";
 import prisma from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export default async function Leaderboard(){
+    const session = await auth();
     const treasureLeaderboard = await prisma.user.findMany({
         where: {
             NOT: {
