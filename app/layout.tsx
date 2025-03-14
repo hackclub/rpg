@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { Info } from "@/app/components/common/Info";
+import { Info } from "@/components/common/Info";
 
 export const metadata: Metadata = {
   title: "RPG",

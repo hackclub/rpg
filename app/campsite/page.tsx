@@ -1,5 +1,5 @@
 import GeneralLayout from "../layouts/general"
-import LargePill from "../components/common/LargePill"
+import LargePill from "@/components/common/LargePill"
 import prisma from "@/lib/prisma"
 import { determineLevel } from "@/lib/stats"
 import { getActiveBossDetails } from "@/lib/prisma"

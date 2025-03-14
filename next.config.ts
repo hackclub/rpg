@@ -6,14 +6,10 @@ const nextConfig: NextConfig = {
   experimental: {
     turbo: {
       resolveAlias: {
-        '@/components': './app/components'
+        '@/components': './components'
       }
     }
   },
-  webpack(config, options) {
-    config.resolve.alias["@/components"] = path.resolve(__dirname, "components");
-    return config;
-  }
 };
 
 export default nextConfig;

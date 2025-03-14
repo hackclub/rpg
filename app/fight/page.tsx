@@ -1,11 +1,11 @@
 'use client'
 import GeneralLayout from "../layouts/general";
 import StatPill from "@/components/common/StatPill";
-import BattleButton from "../components/Battle";
+import BattleButton from "../../components/Battle";
 import useSWR from "swr";
 import { multiFetcher } from "@/lib/fetch";
 import { Boss } from "@/types";
-import Loading from "../components/common/Loading";
+import Loading from "../../components/common/Loading";
 
 export default function Fight(){
     const { data, error, isLoading } = useSWR(["/api/boss/status"], multiFetcher, {
