@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
 import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
 
-async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number, projectType: string){
+async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest){
     const body = await request.json()
     const projectName = body["projectName"] 
     const multiplier = body["multiplier"]
-    const projectType = body["projectType"]
+    const effect = body["effect"]
     const session = await auth();
 
     if (!session){
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest){
     }
     // End battling session
     if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
-        onBattleCompletion(search, session?.user.id!, multiplier, projectType)
+        onBattleCompletion(search, session?.user.id!, multiplier)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
 
     } else {
@@ -102,11 +102,14 @@ export async function POST(request: NextRequest){
                     name: projectName
                 }
         })
+        console.log(session.user.id, (await getActiveBossDetails())!["id"],actualProjectId!["id"], effect )
         const res = await prisma.battle.create({
             data: {
                 userId: session?.user.id!,
                 bossId: (await getActiveBossDetails())!["id"],
                 projectId: actualProjectId!["id"],
+                effect: effect,
+                multiplier: multiplier
             }
         })
         const setUserIsCurrentlyBattling = await prisma.user.update({

@@ -14,6 +14,7 @@ export default async function Inventory(){
                 It's dangerous to go alone, take these!
             </p>
             <Items/>
+            <h2>Shop</h2>
             <Shop/>
         </GeneralLayout>
     )

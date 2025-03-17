@@ -47,7 +47,7 @@ export default function Signpost({className}: {className: string}){
                         </span>
                     </StatPill>
                 <StatPill> 
-                    { session.data?.user.treasure } treasure
+                    { session.data?.user.treasure } <img className = "inline md:hidden align-middle size-10" alt = "Treasure" src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7eafdce94e9f2440f6d4c7382165984d0eb9c53a_coin.png"/> <span className = "hidden md:inline">treasure</span>
                 </StatPill>
 
             </span>

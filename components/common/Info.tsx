@@ -41,9 +41,9 @@ export function Info(){
         <Modal isOpen={infoIsOpen} setIsOpen={setInfoIsOpen}>
             <h1 className = "text-3xl md:text-5xl py-4">Settings</h1>
                 <div className = "flex flex-col gap-4 h-full">
-                    <p className = "flex flex-row items-center gap-2"><span className = "text-accent">Music: </span> <Link className = "link" href= "https://www.youtube.com/watch?v=HFgHkynhBnk">Prodigy Game OST</Link> <Music audio={audio} setAudio={setAudio} play={play} stop={stop}/></p>
-                    <p><span className = "text-accent">Repository: </span> <Link className = "link" href = "https://github.com/hackclub/rpg">https://github.com/hackclub/rpg</Link></p>
-                    <p>A project by <span className = "text-accent"><Link className = "link" href = "https://github.com/phthallo">@phthallo</Link>.</span></p>
+                    <p className = "flex flex-row items-center gap-2"><span className = "text-accent">Music: </span> <Link className = "link" target="_blank" href= "https://www.youtube.com/watch?v=HFgHkynhBnk">Prodigy Game OST</Link> <Music audio={audio} setAudio={setAudio} play={play} stop={stop}/></p>
+                    <p><span className = "text-accent">Repository: </span> <Link className = "link" target="_blank" href = "https://github.com/hackclub/rpg">https://github.com/hackclub/rpg</Link></p>
+                    <p>A project by <span className = "text-accent"><Link className = "link" target="_blank" href = "https://github.com/phthallo">@phthallo</Link>.</span></p>
                 </div>
         </Modal>
         </>

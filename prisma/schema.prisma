@@ -97,6 +97,8 @@ model Battle {
   duration    Int      @default(0)
   damage      Int      @default(0) // damage done to the boss
   boss        Boss     @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
+  effect      String?  // was this a strength/weakness or none of the boss.
+  multiplier  Float    // damage multiplier in accordance with this being a strength or weakness
   projectId   Int 
   project     Project  @relation(fields: [projectId], references: [id]) // project that this battle is associated with
   createdAt   DateTime @default(now())

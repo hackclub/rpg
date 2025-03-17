@@ -34,27 +34,37 @@ export default function BattleButton(){
         `https://waka.hackclub.com/api/compat/wakatime/v1/users/${session.data?.user.providerAccountId}/stats/last_30_days`,
         "/api/project/status"]
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
+        refreshInterval: 250,
         onSuccess: (data) => {
           setIsBattling(data[0]["battling"])
+          setProjectEffect(data[1] ? data[1]["effect"] : "")
+          setProjectType(data[1] ? data[1]["project"]["type"] : projectType)
+          setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
+
         }
     })
 
     useEffect(() => {
         if (data){
           setIsBattling(data[0]["battling"])
+          setProjectEffect(data[1] ? data[1]["effect"] : "")
+          setProjectType(data[1] ? data[1]["project"]["type"]: projectType)
+          setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
         }
       }, [data])
 
-    let projects 
+    let projects, newProjectEffect: string, newProjectType: string
     if (isLoading){
         return <div>Loading...</div>
     }
     if (data){
         projects = (data[3]["data"]["projects"]).concat(data[4])
-        projects =  Array.from(
+        projects = Array.from(
             new Map(projects.map((item: any)=> [item.name, item])).values()
           );
     }
+
+
 
     function clearStates(){
         setSelectedProject("")
@@ -67,9 +77,10 @@ export default function BattleButton(){
         const selectedProject = String(formData.get("project"))
         const customProject = String(formData.get("customProject"))
         const projectType = String(formData.get("type"))
+        newProjectType = projectType
         
         const getCurrentEquippedWeapon = (await fetch("/api/inventory/status?query=equipped", {cache: "no-store"}).then(r=> r.json()))[0]
-        const getBossStats = (await fetch("/api/boss/status").then(r=>r.json()))
+        const getBossStats = (await fetch("/api/boss/status").then(r => r.json()))
 
         let multiplier
 
@@ -78,14 +89,19 @@ export default function BattleButton(){
         } else {
             multiplier = getCurrentEquippedWeapon["multiplier"]
         }
+
+        
         if (getBossStats["weakness"] == projectType){
             multiplier *= 2
-            console.log("matches")
+            newProjectEffect = "weakness"
             setProjectEffect("weakness")
 
         } else if (getBossStats["strength"] == projectType){
             multiplier /= 2
+            newProjectEffect = "strength"
             setProjectEffect("strength")
+        } else {
+            setProjectEffect("")
         }
 
         const projectToDB = selectedProject !== "_other" ? selectedProject.replace(/[^a-zA-Z0-9-]/g, '') : customProject.replace(/[^a-zA-Z0-9-]/g, '')
@@ -94,18 +110,20 @@ export default function BattleButton(){
                 body: JSON.stringify(
                     {
                         "name": projectToDB,
-                        "projectType": projectType
+                        "projectType": projectType,
                     }
                 )
             }
         )
-
+        console.log("handlebattlestart", newProjectEffect, projectEffect)
         const r = await fetch("/api/battle", { 
             method: "POST", 
             body: JSON.stringify(
                 {
                     "projectName": selectedProject !== "_other" ? selectedProject : customProject.replace(/[^a-zA-Z0-9-]/g, ''),
-                    "projectType": projectType    
+                    "projectType": projectType,
+                    "effect": newProjectEffect as string,
+                    "multiplier": multiplier
                 }) 
             }); 
         setIsOpen(false); 
@@ -128,7 +146,7 @@ export default function BattleButton(){
          <Modal isOpen={isOpen} setIsOpen={setIsOpen} customCloseAction={clearStates}>
             <h1 className = "text-2xl md:text-5xl py-4">Start adventuring</h1>
             <div className = "text-base sm:max-lg:text-sm grid-cols-1 lg:grid-cols-2">
-            <Form id="battleStats" className = "lg:grid lg:grid-cols-2 gap-8" action="javascript:void(0);" onSubmit={(e) => { handleBattleStart(e) }}>
+            <Form id="battleStats" className = "lg:grid lg:grid-cols-2 gap-8" action="javascript:void(0);" onSubmit={(e) => { mutate(); handleBattleStart(e) }}>
                 <div className = "col-span-1 flex flex-col gap-2">
                         <div className = "flex flex-col gap-2">
                             <label htmlFor="project" className = "font-bold text-accent">What project are you working on?</label>
@@ -204,17 +222,19 @@ function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {stat
 
             <h2>Prizes</h2>
             <div className = "flex flex-col flex-wrap gap-4 items-center lg:items-start">
-                <div className = "flex flex-row gap-4">
+                <div className = "flex flex-col lg:flex-row gap-4 items-center">
                     <StatPill>{damage} damage done!
                     </StatPill>
                     <StatPill>
-                    <span className = "text-accent font-bold">Boss HP: {boss["health"]}</span>
-                    { states.projectEffect == "strength" 
-                            ? <span>{' -- '} Weak attack... <span className = "text-accent">{states.projectType}</span> projects do half damage :{'('}</span>
-                            : states.projectEffect == "weakness"
-                                ? <span>{' -- '} Very effective! <span className = "text-accent">{states.projectType}</span> projects do double damage!</span>
-                                : null  /* known issue: strengths/weaknesses do not save if you navigate away from the attack page */
+                        { states.projectEffect == "strength" 
+                                ? <span>Weak attack... <span className = "text-accent">{states.projectType}</span> projects do half damage :{'('}</span>
+                                : states.projectEffect == "weakness"
+                                    ? <span>Very effective! <span className = "text-accent">{states.projectType}</span> projects do double damage!</span>
+                                    : states.projectType + " projects do normal damage..."
                         }
+                    </StatPill>
+                    <StatPill>
+                        <span className = "text-accent font-bold">Boss HP: {boss["health"]}</span>
                     </StatPill>
                     </div>
                 <StatPill>+ {treasure} treasure</StatPill>

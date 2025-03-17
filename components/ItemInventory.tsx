@@ -21,7 +21,7 @@ export default function Items(){
     }
 
     return (
-        <div className = "grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] justify-between py-4 gap-y-16 gap-16 flex-wrap">
+        <div className = "grid grid-cols-[repeat(auto-fill,minmax(5rem,1fr))] justify-between py-4 gap-y-16 gap-16 flex-wrap">
             {items.map((item: Item, index: number) => (
                 <div key = {index} className = "">
                     <Tooltip id={item.name} className = "z-20"/>

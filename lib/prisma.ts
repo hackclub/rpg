@@ -5,31 +5,31 @@ export const inventoryData: Item[] = [
     {
         name: "Wooden sword",
         desc: "A trusty weapon.",
-        image: "https://placehold.co/40x40",
+        image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9db948ec8bb9adb03d0eacef807cb1e2ffa5fb55_swordt2.png",
         rarity: 1,
         multiplier: 1.0 
     },
     {
         name: "Bow and arrow",
         desc: "May your aim be as true as your heart is pure.",
-        image: "https://placehold.co/40x40",
+        image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/e46f23eadc42a58f72dea9c9f77fc2b760bd558b_bowt2.png",
         rarity: 1,
         multiplier: 1.1
     },
     {
         name: "Pure nail",
         desc: "Fit for a bug.",
-        image: "https://placehold.co/40x40",
+        image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/4b0cf9759bb53dac61b28a06d6ecfe728117b010_image.png",
         rarity: 3,
         multiplier: 1.3
     },
     {
         name: "Rocket Propelled Grenade",
         desc: "What else would RPG stand for?",
-        image: "https://placehold.co/40x40",
+        image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/573e0a0c3c05cbfc8e6030d585957a2768ee769d_wandt2.png",
         rarity: 3,
         multiplier: 1.4
-    }
+    },
 ]
 
 export const bossData = [
@@ -82,7 +82,7 @@ export async function isCurrentlyBattling(email: string){
 export async function getLatestSessionDetails(userId: string){
     const latestSession = await prisma.battle.findFirst({
         where: {
-            userId: userId
+            userId: userId,
         },
         orderBy: {
         createdAt: 'desc', 
@@ -91,6 +91,9 @@ export async function getLatestSessionDetails(userId: string){
             id: true,
             duration: true,
             createdAt: true,
+            effect: true,
+            project: true,
+            multiplier: true
         }
     })
     return latestSession

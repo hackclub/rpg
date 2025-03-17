@@ -48,3 +48,5 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
 
 ## To do:
 - [ ] resolve eslint errors
+- [ ] known issue: if user kills a boss, the modal closes automatically and disables scroll
+- [ ] if a user kills a boss and people are in a session, they will not be able to stop their session

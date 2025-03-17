@@ -1,7 +1,7 @@
 import useSound from "use-sound"
 export default function Button({children, className, onClickAction, href, disabled, type, form, shouldPreventDefault=true}: {children: React.ReactNode, className?: string, onClickAction?: any, href?: string, disabled?: boolean, type?: "button" | "submit" | "reset", form?: string, shouldPreventDefault?: boolean}){
-   const [ play, { stop }] = useSound("https://hc-cdn.hel1.your-objectstorage.com/s/v3/43360dacf6efbbf41a787166931bd273c10c9fc5_ui_change_selection_audio.mp4") 
-   const [ clickPlay ] = useSound("https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3bd3f0972d62d58cdfce91bc042d32ee643aa94_ui_button_confirm_audio.mp4")
+   const [ play, { stop }] = useSound("https://hc-cdn.hel1.your-objectstorage.com/s/v3/43360dacf6efbbf41a787166931bd273c10c9fc5_ui_change_selection_audio.mp4", { volume: 0.75 }) 
+   const [ clickPlay ] = useSound("https://hc-cdn.hel1.your-objectstorage.com/s/v3/d3bd3f0972d62d58cdfce91bc042d32ee643aa94_ui_button_confirm_audio.mp4", { volume: 0.75 })
    
    function handleClick(event: any){
         if (shouldPreventDefault){

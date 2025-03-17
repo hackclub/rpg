@@ -10,7 +10,7 @@ export default async function Home(){
             <h1 className = "text-4xl">Greetings, adventurer!</h1>
             <p>Welcome to the campsite. Here, you can rest and recover before heading out to battle.</p>
             <div className = "flex flex-col gap-5">
-                <div id = "current_boss-info" className = "w-full *:mx-auto text-center flex flex-col gap-2">
+                <div id = "current-boss-info" className = "w-full *:mx-auto text-center flex flex-col gap-2">
                 <img alt="Artwork promoting RPG relative" className = "w-1/2 p-4 rounded-lg" src = "/rpgfinal.png"/>
                     <LoadCurrentBoss/>
                 </div>

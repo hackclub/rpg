@@ -7,6 +7,7 @@ import { auth } from "@/auth"
 export async function GET(request: NextRequest){
     const session = await auth();
     const query = request.nextUrl.searchParams.get("query")
+    const bool = request.nextUrl.searchParams.get("bool")
     if (query === "currently"){
         const attackStatus = (await isCurrentlyBattling(session?.user.email!))!
         return NextResponse.json(attackStatus)    
