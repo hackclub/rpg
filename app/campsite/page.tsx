@@ -1,7 +1,11 @@
 import GeneralLayout from "../layouts/general"
 import { LoadCurrentBattles, LoadRecentBattles, LoadCurrentBoss, LoadCurrentAdventurers } from "@/components/BattleStatus"
+import { ActiveUsers } from "@/components/BattleStatusClient";
 import { auth } from "@/auth"
+
+
 export default async function Home(){
+    const currentAdventurers = await LoadCurrentAdventurers();
     const session = await auth();
     return (
         <GeneralLayout title = "Campsite">
@@ -14,7 +18,7 @@ export default async function Home(){
 
             <div id = "current">
                 <h2>Current Battles ⚔️ </h2>
-                <LoadCurrentAdventurers/>
+                <ActiveUsers currentAdventurers={currentAdventurers}/>
                 <LoadCurrentBattles/>
             </div>  
 

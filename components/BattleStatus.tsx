@@ -105,7 +105,6 @@ export async function LoadCurrentAdventurers(){
             battling: true
         }
     })
-    return (
-        <span>{count.length} {count.length == 1 ? " adventurer" : " adventurers" } currently on {count.length == 1 ? " a quest" : " quests" }!</span>
-    )
+    console.log(count)
+    return count
 }
