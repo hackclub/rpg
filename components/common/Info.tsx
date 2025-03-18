@@ -1,8 +1,10 @@
 'use client'
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Modal from "./Modal";
 import useSound from "use-sound";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import Log from "../Log";
 
 const Music = ({audio, play, stop, setAudio}: {audio: boolean, play: () => void, stop: () => void, setAudio: (value: any) => void}) => {
     return (
@@ -24,8 +26,10 @@ const Music = ({audio, play, stop, setAudio}: {audio: boolean, play: () => void,
 
 export function Info(){
     const [ infoIsOpen, setInfoIsOpen ] = useState(false)
+    const [ logIsOpen, setLogIsOpen ] = useState(false)
     const [ audio, setAudio ] = useState(false);
     const [ play, { stop }] = useSound("/audio.mp3", { volume: audio ? 1 : 0, loop: true})
+    const session = useSession();
 
     return (
         <>
@@ -36,8 +40,16 @@ export function Info(){
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
             </button>
+
+            { session.status === "authenticated" ? 
+                <button onClick={() => setLogIsOpen(true)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 80l0 48c0 17.7 14.3 32 32 32l16 0 48 0 0-80c0-26.5-21.5-48-48-48S0 53.5 0 80zM112 32c10 13.4 16 30 16 48l0 304c0 35.3 28.7 64 64 64s64-28.7 64-64l0-5.3c0-32.4 26.3-58.7 58.7-58.7L480 320l0-192c0-53-43-96-96-96L112 32zM464 480c61.9 0 112-50.1 112-112c0-8.8-7.2-16-16-16l-245.3 0c-14.7 0-26.7 11.9-26.7 26.7l0 5.3c0 53-43 96-96 96l176 0 96 0z"/></svg>
+                </button>
+            : null }
+
             <Music audio={audio} setAudio={setAudio} play={play} stop={stop}/>
         </div>
+
         <Modal isOpen={infoIsOpen} setIsOpen={setInfoIsOpen}>
             <h1 className = "text-3xl md:text-5xl py-4">Settings</h1>
                 <div className = "flex flex-col gap-4 h-full">
@@ -46,6 +58,10 @@ export function Info(){
                     <p>A project by <span className = "text-accent"><Link className = "link" target="_blank" href = "https://github.com/phthallo">@phthallo</Link>.</span></p>
                 </div>
         </Modal>
+        { session.status === "authenticated" ?
+        <Log logIsOpen={logIsOpen} setLogIsOpen={setLogIsOpen}/>
+        : null }
+
         </>
     )
 }

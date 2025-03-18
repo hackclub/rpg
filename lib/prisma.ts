@@ -133,4 +133,29 @@ export async function getAllBossDetails(){
     return response
 }
 
+export async function getAllUserBattles(userId: string){
+    const response = await prisma.battle.findMany({
+        where: {
+            userId: userId,
+            NOT: {
+                duration: 0
+            }
+        },
+        orderBy: {
+            createdAt: "desc"
+        }, 
+        select: {
+            damage: true,
+            duration: true,
+            user: true,
+            project: true,
+            createdAt: true,
+            updatedAt: true,
+            boss: true,
+            scrap: true
+        }
+    })
+    return response
+}
+
 export default prisma

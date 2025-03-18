@@ -22,6 +22,11 @@
     --foreground: #ededed;
   }
 }
+@media (prefers-color-scheme: light) {
+  div, p, span, button {
+    @apply text-white
+  }
+}
 
 h1, h2, h3 {
   font-family: Metal Mania, sans-serif;
