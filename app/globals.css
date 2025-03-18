@@ -16,9 +16,14 @@
   --font-title: Metal Mania, sans-serif;
 }
 
+div, p, span, button, h1, h2, h3 {
+    @apply text-white
+}
+
 h1, h2, h3 {
   font-family: Metal Mania, sans-serif;
 }
+
 
 
 select {
