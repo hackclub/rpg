@@ -35,7 +35,7 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
 
                     <div className = "flex flex-col col-span-3 gap-1">
                         <span className = "text-accent font-bold">Description: </span>
-                        {battle.scrap[0].description}
+                        {battle?.scrap?.[0]?.description}
                     </div>
                 
                     </div>
