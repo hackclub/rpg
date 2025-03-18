@@ -23,7 +23,7 @@
   }
 }
 @media (prefers-color-scheme: light) {
-  div, p, span, button {
+  div, p, span, button, h1, h2, h3 {
     @apply text-white
   }
 }
