@@ -3,7 +3,7 @@ ARG NODE_VERSION=23.7.0
 FROM imbios/bun-node:${BUN_VERSION}-${NODE_VERSION}-slim
 
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y curl
+RUN apt-get install --no-install-recommends -y curl wget
 
 WORKDIR /app
 COPY package.json bun.lock ./
