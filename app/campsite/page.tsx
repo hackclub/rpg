@@ -1,5 +1,5 @@
 import GeneralLayout from "../layouts/general"
-import { LoadCurrentBattles, LoadRecentBattles, LoadCurrentBoss } from "@/components/BattleStatus"
+import { LoadCurrentBattles, LoadRecentBattles, LoadCurrentBoss, LoadCurrentAdventurers } from "@/components/BattleStatus"
 import { auth } from "@/auth"
 export default async function Home(){
     const session = await auth();
@@ -14,7 +14,7 @@ export default async function Home(){
 
             <div id = "current">
                 <h2>Current Battles ⚔️ </h2>
-                <p>Adventurers currently on quests</p>
+                <LoadCurrentAdventurers/>
                 <LoadCurrentBattles/>
             </div>  
 

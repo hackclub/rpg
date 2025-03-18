@@ -35,7 +35,7 @@ option {
   @apply w-full
 }
 
-input {
+input, textarea {
   @apply border border-accent rounded-sm p-2 bg-accent/20
 }
 

@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
-export default function Modal({isOpen, setIsOpen, children, customClose, customCloseAction}: {isOpen: boolean, setIsOpen: (value: any) => void, children: React.ReactNode, customClose?: string, customCloseAction?: () => void}){
+export default function Modal({isOpen, setIsOpen, children, customClose, customCloseAction, showClose=true}: {isOpen: boolean, setIsOpen: (value: any) => void, children: React.ReactNode, customClose?: string, customCloseAction?: () => void, showClose?: boolean}){
     useEffect(() => { // weird solution for disabling scrolling when the modal is open
         if (isOpen) {
             document.body.classList.add("overflow-y-hidden")
@@ -18,7 +18,8 @@ export default function Modal({isOpen, setIsOpen, children, customClose, customC
                     <div className = "grow">
                         {children}
                     </div>
-                    <button className = "self-center lg:self-end" onClick={() => {setIsOpen(false); customCloseAction && customCloseAction()}}>{customClose ? customClose : "Close"}</button>
+
+                    { showClose ? <button className = "self-center lg:self-end" onClick={() => {setIsOpen(false); customCloseAction && customCloseAction()}}>{customClose ? customClose : "Close"}</button> : null }
                 </div>
             </div>
         : null }

@@ -99,3 +99,13 @@ export async function LoadRecentBattles(){
 }
 
 
+export async function LoadCurrentAdventurers(){
+    const count = await prisma.user.findMany({
+        where: {
+            battling: true
+        }
+    })
+    return (
+        <span>{count.length} {count.length == 1 ? " adventurer" : " adventurers" } currently on {count.length == 1 ? " a quest" : " quests" }!</span>
+    )
+}

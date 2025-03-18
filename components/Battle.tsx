@@ -12,9 +12,10 @@ import { Battle } from "@prisma/client"
 import { useSession } from "next-auth/react"
 import Form from 'next/form';
 import { FormEvent } from "react"
+import { Tooltip } from "react-tooltip"
 
 const battleCompleteFlavourText = [
-    "You arrive at your campsite, victorious, and take stock of what you've taken from $BOSSNAME",
+    "You arrive at your campsite, victorious, and take stock of what you've taken from $BOSSNAME.",
 ]
 
 export default function BattleButton(){
@@ -115,7 +116,6 @@ export default function BattleButton(){
                 )
             }
         )
-        console.log("handlebattlestart", newProjectEffect, projectEffect)
         const r = await fetch("/api/battle", { 
             method: "POST", 
             body: JSON.stringify(
@@ -130,6 +130,25 @@ export default function BattleButton(){
         setWeaponMultiplier(multiplier)
         setProjectType(projectType)
         clearStates();
+    }
+
+    async function acceptBattleRewards(e: FormEvent<HTMLFormElement>){
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const url = String(formData.get("url"))
+        const description = String(formData.get("description"))
+        const r = await fetch("/api/battle/scraps", {
+            method: "POST",
+            body: JSON.stringify({
+                url: url,
+                description: description
+            })
+        })
+        setProjectEffect("")
+        setProjectType("")
+        setIsFinishedOpen(false)
+        mutate(); 
+
     }
 
     return (
@@ -192,7 +211,7 @@ export default function BattleButton(){
          </Modal>
 
          {/* finish session modal */}
-         { data && data[1] && <SuccessModal states={{isFinishedOpen, setIsFinishedOpen, projectType, setProjectType, projectEffect, setProjectEffect}} data={data[1]} boss={data[2]} closeAction={() => {mutate(); setProjectEffect(""), setProjectType("")}} weaponMultiplier={weaponMultiplier}/> }
+         { data && data[1] && <SuccessModal states={{isFinishedOpen, setIsFinishedOpen, projectType, setProjectType, projectEffect, setProjectEffect}} data={data[1]} boss={data[2]} closeAction={acceptBattleRewards} weaponMultiplier={weaponMultiplier}/> }
         </>
     )
 }
@@ -212,34 +231,50 @@ function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {stat
     const treasure = determineTreasure(data["duration"], weaponMultiplier)
     const experience = determineExperience(data["duration"], weaponMultiplier)
     return (
-        <Modal isOpen={states.isFinishedOpen} setIsOpen={states.setIsFinishedOpen} customClose="CLAIM REWARDS" customCloseAction={closeAction}>
+        <Modal isOpen={states.isFinishedOpen} setIsOpen={states.setIsFinishedOpen} showClose={false}>
             <h1 className = "text-3xl md:text-5xl py-4 align-middle">
             <svg xmlns="http://www.w3.org/2000/svg" className = "inline size-6 md:size-12 mr-2 md:mr-4" fill="#fff" viewBox="0 0 256 256"><path d="M216,32H152a8,8,0,0,0-6.34,3.12l-64,83.21L72,108.69a16,16,0,0,0-22.64,0l-12.69,12.7a16,16,0,0,0,0,22.63l20,20-28,28a16,16,0,0,0,0,22.63l12.69,12.68a16,16,0,0,0,22.62,0l28-28,20,20a16,16,0,0,0,22.64,0l12.69-12.7a16,16,0,0,0,0-22.63l-9.64-9.64,83.21-64A8,8,0,0,0,224,104V40A8,8,0,0,0,216,32ZM52.69,216,40,203.32l28-28L80.68,188Zm70.61-8L48,132.71,60.7,120,136,195.31ZM208,100.06l-81.74,62.88L115.32,152l50.34-50.34a8,8,0,0,0-11.32-11.31L104,140.68,93.07,129.74,155.94,48H208Z"></path></svg>
                 Battle Summary
             </h1>
-                { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", boss["name"]) }
+                { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", boss["name"]) } <span className = "text-accent font-bold">Boss HP: {boss.health}</span>
                 <p>Your session was {(data["duration"]/3600).toFixed(2) + " hours long (" + (data["duration"]/60).toFixed(2) + " minutes)"}</p>
-
+            <div className = "md:grid gap-4 md:grid-cols-2">
+            <div>
             <h2>Prizes</h2>
-            <div className = "flex flex-col flex-wrap gap-4 items-center lg:items-start">
-                <div className = "flex flex-col lg:flex-row gap-4 items-center">
-                    <StatPill>{damage} damage done!
-                    </StatPill>
-                    <StatPill>
-                        { states.projectEffect == "strength" 
-                                ? <span>Weak attack... <span className = "text-accent">{states.projectType}</span> projects do half damage :{'('}</span>
-                                : states.projectEffect == "weakness"
-                                    ? <span>Very effective! <span className = "text-accent">{states.projectType}</span> projects do double damage!</span>
-                                    : states.projectType + " projects do normal damage..."
-                        }
-                    </StatPill>
-                    <StatPill>
-                        <span className = "text-accent font-bold">Boss HP: {boss["health"]}</span>
-                    </StatPill>
-                    </div>
-                <StatPill>+ {treasure} treasure</StatPill>
-                <StatPill>+ {experience} experience</StatPill>
+                <div className = "flex flex-col flex-wrap gap-4 items-start">
+                    <div className = "flex flex-col gap-2">
+                        <StatPill>
+                            <Tooltip id = "effect"/>
+                            {damage} damage done! 
+                            { states.projectEffect == "strength" 
+                                    ? <span className = "text-accent font-bold" data-tooltip-id="effect" data-tooltip-content={states.projectType + " projects do half damage :("}>This attack was weak...</span>
+                                    : states.projectEffect == "weakness"
+                                        ? <span className = "text-accent font-bold" data-tooltip-id="effect" data-tooltip-content={states.projectType + " projects do double damage!"}>This attack was very effective!</span>
+                                        : null
+                            }
+                        </StatPill>
+                        </div>
+                    <StatPill>+ {treasure} treasure</StatPill>
+                    <StatPill>+ {experience} experience</StatPill>
+                </div>
             </div>
+
+            <div>
+            <h2>Upload Scraps</h2>
+            <p>Show the other adventurers what you did in your battle!</p>
+                <Form id="scrapsSubmit" action="javascript:void(0);" onSubmit={(e) => {closeAction(e)}}>
+                        <span className = "flex flex-col gap-2">
+                        <label className = "font-bold text-accent block">What did you do this session?</label> 
+                        <textarea placeholder="Something like 'I improved the UI of the form elements and fixed a bug that was stopping things from uploading.'" className = "resize-y" required form="scrapsSubmit" name="description" id="description"></textarea>
+                        <label className = "font-bold text-accent block">What did you work on? Upload some proof!</label> 
+                        <span className = "text-sm">(Go to <a target="_blank" className="link" href = "https://app.slack.com/client/T0266FRGM/C016DEDUL87">#cdn</a>, upload a scrap,  and put the link here)</span>
+                        <input placeholder="https://...." required form="scrapsSubmit" name="url" type = "text" id="url"></input>
+                    </span>
+                    <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto">CLAIM REWARDS</Button>
+                </Form>
+            </div>
+            </div>
+
         </Modal>
     )
 }
