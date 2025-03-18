@@ -34,13 +34,13 @@ export const inventoryData: Item[] = [
 
 export const bossData = [
     {
-        name: "Generic Boss Name",
-        image: "https://placehold.co/800x600",
-        desc: "A ferocious beast, come to slay the adventurers who dare challenge it.",
+        name: "The Red Dragon",
+        image: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/9a64303ec0434cc31c9a85f38053d70d52fe05a6_boss1.png",
+        desc: "A hoarder of treasure, ready to defend its stash from those who dare challenge it.",
         strength: "Web development",
         weakness: "Game development",
-        health: 200,
-        maxHealth: 200,
+        health: 1000,
+        maxHealth: 1000,
         active: true,
     }
 ]

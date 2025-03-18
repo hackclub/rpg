@@ -15,13 +15,17 @@ export async function LoadCurrentBoss(){
         )
     }
     return (
-        <>
+        <>           
         <Suspense fallback={<div>loading</div>}>
-            <div className = "rounded-lg h-8 w-8/12 bg-white/40 border border-accent/50">
-                <div className = {shineEffect} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
-            </div>
-            <span>{activeBoss.health} / {activeBoss.maxHealth} HP</span>
-        </Suspense>
+            <img alt = {activeBoss.name} src = {activeBoss.image} className="w-1/2 p-4 rounded-lg"/>
+            <p>{activeBoss.name}</p>
+
+                <div className = "rounded-lg h-8 w-8/12 bg-white/40 border border-accent/50">
+                    <div className = {shineEffect} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
+                </div>
+                <span>{activeBoss.health} / {activeBoss.maxHealth} HP</span>
+
+            </Suspense>
         </>
     )
 }
@@ -88,7 +92,7 @@ export async function LoadRecentBattles(){
                     <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.project.name}'</div>
                 </div>
             </LargePill>
-            ) : <LargePill>No battles found! Or something went, very, very wrong.</LargePill>}
+            ) : <LargePill>No battles found!</LargePill>}
         </div>
     </Suspense>
     )

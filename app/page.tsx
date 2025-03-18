@@ -7,8 +7,8 @@ export default function Index() {
         <img alt="Header (top)" className = "w-1/4" src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/01a7c6aa5aa33a6a13d6f8fadb293e72947ec813_image.png"/>
           <h1 className ="text-8xl py-4">RPG</h1>
         <img alt="Header (bottom)" className = "w-1/4 rotate-180" src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/01a7c6aa5aa33a6a13d6f8fadb293e72947ec813_image.png"/>
-          <p className = "py-2">exciting placeholder text.</p>
-          <div className = "block my-2" id = 'menu'>
+          <p className = "py-2">are you ready to level up?</p>
+          <div className = "block my-2 z-10" id = 'menu'>
             <SignInButton/>
           </div>
       </div>
