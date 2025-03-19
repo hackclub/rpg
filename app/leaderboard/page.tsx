@@ -10,8 +10,10 @@ export default async function Leaderboard(){
         where: {
             NOT: {
                 email: "example@mail.com",
-                treasure: 0
             },
+            treasure: {
+                gt: 0
+            }
         },
         orderBy: {
             treasure: "desc"
