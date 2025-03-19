@@ -9,10 +9,10 @@ export default async function Leaderboard(){
     const treasureLeaderboard = await prisma.user.findMany({
         where: {
             NOT: {
-                email: "example@mail.com"
-            }
+                email: "example@mail.com",
+                treasure: 0
+            },
         },
-        take: 10,
         orderBy: {
             treasure: "desc"
         },

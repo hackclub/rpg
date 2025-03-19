@@ -8,7 +8,7 @@ export default function Impersonate({user}: {user: User}){
         <>
         { 
             session?.data?.user.role === "admin" 
-                ? <button onClick={() => impersonate(user.providerAccountId!)}>impersonate</button> 
+                ? <button onClick={() => impersonate(user.providerAccountId!)}>👀</button> 
             : null
         } 
         </>
