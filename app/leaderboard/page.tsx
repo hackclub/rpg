@@ -2,6 +2,7 @@ import GeneralLayout from "../layouts/general";
 import LargePill from "@/components/common/LargePill";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
+import Impersonate from "@/components/Impersonate";
 
 export default async function Leaderboard(){
     const session = await auth();
@@ -17,6 +18,7 @@ export default async function Leaderboard(){
         },
         select: {
             name: true,
+            providerAccountId: true,
             image: true,
             treasure: true,
         }
@@ -31,7 +33,9 @@ export default async function Leaderboard(){
                 <LargePill key={index}> 
                     <div className = "flex sm:flex-row gap-5 w-full items-center">
                     <span>{index + 1}</span> 
-                    <span className = "flex flex-row gap-2"><img alt={`${user.name}'s profile picture`} className = "align-middle size-5 inline rounded-full" src = {user.image!}/>{user.name}</span> 
+                    <span className = "flex flex-row gap-2"><img alt={`${user.name}'s profile picture`} className = "align-middle size-5 inline rounded-full" src = {user.image!}/>{user.name}                     
+                        <Impersonate user={user}/> 
+                    </span> 
                     <span className = "ml-auto">{user.treasure} <img className = "inline sm:hidden align-middle size-10" alt = "Treasure" src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/7eafdce94e9f2440f6d4c7382165984d0eb9c53a_coin.png"/> <span className = "hidden sm:inline">treasure</span></span>
                     </div>
                 </LargePill> 

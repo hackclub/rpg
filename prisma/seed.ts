@@ -9,7 +9,8 @@ async function main(){
       data: {
         name: "Admin",
         email: "example@mail.com",
-        providerAccountId: "example"
+        providerAccountId: "example",
+        role: "admin"
       }
     })
 

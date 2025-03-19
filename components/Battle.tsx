@@ -28,26 +28,27 @@ export default function BattleButton(){
     const [ projectType, setProjectType ] = useState("")
     const [ projectEffect, setProjectEffect ] = useState("")
     const session = useSession()
+
     const urls = [
         "/api/battle/status?query=currently", 
         "/api/battle/status?query=latest", 
         "/api/boss/status", 
-        `https://waka.hackclub.com/api/compat/wakatime/v1/users/${session.data?.user.providerAccountId}/stats/last_30_days`,
-        "/api/project/status"]
+        "/api/project/status"
+    ]
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
         refreshInterval: 250,
         onSuccess: (data) => {
-          // setIsBattling(data[0]["battling"])
           setProjectEffect(data[1] ? data[1]["effect"] : "")
           setProjectType(data[1] ? data[1]["project"]["type"] : projectType)
           setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
+        },
 
-        }
     })
+
+    let isBattling 
 
     useEffect(() => {
         if (data){
-          // setIsBattling(data[0]["battling"])
           setProjectEffect(data[1] ? data[1]["effect"] : "")
           setProjectType(data[1] ? data[1]["project"]["type"]: projectType)
           setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
@@ -55,18 +56,16 @@ export default function BattleButton(){
       }, [data, projectType, weaponMultiplier])
 
     let projects, newProjectEffect: string, newProjectType: string
-    let isBattling
 
+    
     if (data){
         isBattling = data[0]["battling"]
-
-        projects = (data[3]["data"]["projects"]).concat(data[4])
+        projects = data[3]
 
         projects = Array.from(
             new Map(projects.map((item: any)=> [item.name, item])).values()
           );
     }
-
 
     function clearStates(){
         setSelectedProject("")

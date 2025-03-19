@@ -26,7 +26,7 @@ export const config: NextAuthConfig = {
              id: user.id!
            },
            data: {
-             providerAccountId: profile?.sub!
+             providerAccountId: profile?.sub!,
            }
          })
       }

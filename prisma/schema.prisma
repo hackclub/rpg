@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id                  String    @id @default(cuid())
+  role                String    @default("user")
   providerAccountId   String?
   email               String    @unique
   name                String?
