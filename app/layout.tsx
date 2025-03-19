@@ -5,7 +5,7 @@ import { Info } from "@/components/common/Info";
 
 export const metadata: Metadata = {
   title: "RPG",
-  description: "Description!",
+  description: "Are you ready to level up?",
 };
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode;}>) {
