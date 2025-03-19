@@ -55,9 +55,7 @@ export default function BattleButton(){
       }, [data, projectType, weaponMultiplier])
 
     let projects, newProjectEffect: string, newProjectType: string
-    if (isLoading){
-        return <div>Loading...</div>
-    }
+
     if (data){
         projects = (data[3]["data"]["projects"]).concat(data[4])
         projects = Array.from(
