@@ -169,8 +169,8 @@ export default function BattleButton(){
                 <div className = "col-span-1 flex flex-col gap-2">
                         <div className = "flex flex-col gap-2">
                             <label htmlFor="project" className = "font-bold text-accent">What project are you working on?</label>
-                            <select className="flex flex-col gap-1" name = "project" id="project" defaultValue="Select a project" form="battleStats" onChange={(e) => {setSelectedProject(e.target.value)}}>
-                                <option value = "_select">[Select a project]</option> 
+                            <select required className="flex flex-col gap-1" name = "project" id="project" defaultValue="Select a project" form="battleStats" onChange={(e) => {setSelectedProject(e.target.value)}}>
+                                <option disabled selected value = "_select">[Select a project]</option> 
                                 {projects && projects.map((project: any, index: number) => /* i really cbf to fix the type rn */
                                     <option key={index} value = {project.name}>{project.name}</option>
                                 )}
@@ -178,13 +178,13 @@ export default function BattleButton(){
                             </select>
                         </div>
                         { selectedProject === "_other" 
-                            ?  <div className = "flex flex-col gap-1"><label className = "font-bold text-accent block">Enter project name: </label> <input form="battleStats" onChange={(e) => {setCustomProject(e.target.value)}} name="customProject" type = "text" id="customProject"></input></div>
+                            ?  <div className = "flex flex-col gap-1"><label className = "font-bold text-accent block">Enter project name: </label> <input form="battleStats" onChange={(e) => {setCustomProject(e.target.value)}} required name="customProject" type = "text" id="customProject"></input></div>
                             : null }
 
                         <div className = "flex flex-col gap-2">
                         <label htmlFor="type" className = "font-bold text-accent">What type of project is it?</label>
                             <select form="battleStats" className="flex flex-col gap-1" name = "type" id="type" defaultValue="Select a type" onChange={(e) => {setProjectType(e.target.value)}} required>
-                                <option value = "_select">[Select a type]</option> 
+                                <option disabled selected value = "_select">[Select a type]</option> 
                                 <option key="game" value = "Game development">Game development</option>
                                 <option key="web" value = "Web development">Web development</option>
                                 <option key="app" value = "App development">App development</option>
@@ -201,10 +201,7 @@ export default function BattleButton(){
                             <Items/>
                         </div>
                         <div className = "col-span-2">
-                            { selectedProject === "_select" ||  !selectedProject || ( selectedProject == "_other" && !customProject) || !projectType
-                            ? <Button disabled={true} className = "w-max mx-auto">SELECT A PROJECT</Button>
-                            : <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto" onClickAction={async () => {mutate()}}>CLICK TO START</Button>
-                        }
+                            <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto" onClickAction={async () => {mutate()}}>CLICK TO START</Button>
                         </div>
                     </Form>
                 </div>
