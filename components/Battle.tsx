@@ -21,7 +21,7 @@ const battleCompleteFlavourText = [
 export default function BattleButton(){
     const [ isOpen, setIsOpen ] = useState(false)
     const [ isFinishedOpen, setIsFinishedOpen ] = useState(false)
-    const [ isBattling, setIsBattling ] = useState(false)
+    // const [ isBattling, setIsBattling ] = useState(false)
     const [ weaponMultiplier, setWeaponMultiplier ] = useState(1)
     const [ selectedProject, setSelectedProject ] = useState("")
     const [ customProject, setCustomProject ] = useState("")
@@ -37,7 +37,7 @@ export default function BattleButton(){
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
         refreshInterval: 250,
         onSuccess: (data) => {
-          setIsBattling(data[0]["battling"])
+          // setIsBattling(data[0]["battling"])
           setProjectEffect(data[1] ? data[1]["effect"] : "")
           setProjectType(data[1] ? data[1]["project"]["type"] : projectType)
           setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
@@ -47,7 +47,7 @@ export default function BattleButton(){
 
     useEffect(() => {
         if (data){
-          setIsBattling(data[0]["battling"])
+          // setIsBattling(data[0]["battling"])
           setProjectEffect(data[1] ? data[1]["effect"] : "")
           setProjectType(data[1] ? data[1]["project"]["type"]: projectType)
           setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
@@ -55,14 +55,17 @@ export default function BattleButton(){
       }, [data, projectType, weaponMultiplier])
 
     let projects, newProjectEffect: string, newProjectType: string
+    let isBattling
 
     if (data){
+        isBattling = data[0]["battling"]
+
         projects = (data[3]["data"]["projects"]).concat(data[4])
+
         projects = Array.from(
             new Map(projects.map((item: any)=> [item.name, item])).values()
           );
     }
-
 
 
     function clearStates(){
