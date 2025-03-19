@@ -8,6 +8,9 @@ export async function GET(request: NextRequest){
     const session = await auth();
     const query = request.nextUrl.searchParams.get("query")
 
+    if (!session){
+        return NextResponse.json({error: "Unauthed", status: 401})
+    }
     if (!query || query === "all"){
         const items = await prisma.user.findFirst({
             where: {

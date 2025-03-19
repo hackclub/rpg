@@ -124,7 +124,12 @@ export async function getActiveBossDetails(){
 export async function getAllBossDetails(){
     const response = await prisma.boss.findMany({
         include: {
-            slainBy: true
+            slainBy: {
+                select: {
+                    name: true,
+                    image: true
+                }
+            }
         },
         orderBy: {
             id: "desc"
