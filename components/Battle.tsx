@@ -52,7 +52,7 @@ export default function BattleButton(){
           setProjectType(data[1] ? data[1]["project"]["type"]: projectType)
           setWeaponMultiplier(data[1] ? data[1]["multiplier"] : weaponMultiplier)
         }
-      }, [data])
+      }, [data, projectType, weaponMultiplier])
 
     let projects, newProjectEffect: string, newProjectType: string
     if (isLoading){
