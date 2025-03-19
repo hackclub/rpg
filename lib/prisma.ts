@@ -116,6 +116,14 @@ export async function getActiveBossDetails(){
     const response = await prisma.boss.findFirst({
         where: {
             active: true
+        },
+        include: {
+            slainBy: {
+                select: {
+                        name: true,
+                        image: true
+                }
+            },
         }
     })
     return response
@@ -126,8 +134,8 @@ export async function getAllBossDetails(){
         include: {
             slainBy: {
                 select: {
-                    name: true,
-                    image: true
+                        name: true,
+                        image: true
                 }
             }
         },
