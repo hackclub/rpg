@@ -54,8 +54,8 @@ export async function LoadCurrentBattles(){
             { currentBattles.length > 0 ? currentBattles.map((battle: any, index: number) => 
             <LargePill key={index}> 
                 <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
-                    <img alt = {`${battle.user.name}'s profile picture`}  className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                    <div className = "grow"><span className ="text-accent">{battle.user.name!} (LVL {determineLevel(battle.user.experience)})</span> is battling right now! They're working on '{battle.project.name}'.</div>
+                    <img alt = {`${battle.user.nickname}'s profile picture`}  className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
+                    <div className = "grow"><span className ="text-accent">{battle.user.nickname!} (LVL {determineLevel(battle.user.experience)})</span> is battling right now! They're working on '{battle.project.name}'.</div>
                 </div>
             </LargePill>
             ) : <LargePill>No one is battling right now :{'('}</LargePill>}
@@ -88,8 +88,8 @@ export async function LoadRecentBattles(){
             { recentBattles.length > 0 ? recentBattles.map((battle: any, index: number) => 
             <LargePill key={index}> 
                 <div className = "text-sm sm:text-base flex flex-row gap-4 items-center">
-                    <img alt = {`${battle.user.name}'s profile picture`} className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
-                    <div className = "grow"><span className = "text-accent">{battle.user.name} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.project.name}'</div>
+                    <img alt = {`${battle.user.nickname}'s profile picture`} className = "align-middle size-12 hidden sm:inline rounded-full" src = {battle.user.image!}/> 
+                    <div className = "grow"><span className = "text-accent">{battle.user.nickname} (LVL {determineLevel(battle.user.experience)})</span> did <span className = "text-accent">{battle.damage} damage</span> in a battle lasting {(battle.duration/3600).toFixed(2)} hours. They were working on '{battle.project.name}'</div>
                 </div>
             </LargePill>
             ) : <LargePill>No battles found!</LargePill>}
@@ -105,6 +105,5 @@ export async function LoadCurrentAdventurers(){
             battling: true
         }
     })
-    console.log(count)
     return count
 }

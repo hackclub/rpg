@@ -13,6 +13,7 @@ model User {
   providerAccountId   String?
   email               String    @unique
   name                String?
+  nickname            String?   @default("User")
   treasure            Int       @default(0)
   createdAt           DateTime  @default(now())
   emailVerified       DateTime?

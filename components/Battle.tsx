@@ -21,7 +21,6 @@ const battleCompleteFlavourText = [
 export default function BattleButton(){
     const [ isOpen, setIsOpen ] = useState(false)
     const [ isFinishedOpen, setIsFinishedOpen ] = useState(false)
-    // const [ isBattling, setIsBattling ] = useState(false)
     const [ weaponMultiplier, setWeaponMultiplier ] = useState(1)
     const [ selectedProject, setSelectedProject ] = useState("")
     const [ customProject, setCustomProject ] = useState("")
@@ -116,7 +115,7 @@ export default function BattleButton(){
                 )
             }
         )
-        const r = await fetch("/api/battle", { 
+        const r = await fetch("/api/battle/start", { 
             method: "POST", 
             body: JSON.stringify(
                 {
@@ -131,9 +130,10 @@ export default function BattleButton(){
         clearStates();
     }
 
-    async function acceptBattleRewards(e: FormEvent<HTMLFormElement>){
+    const acceptBattleRewards = async function(e: FormEvent<HTMLFormElement>){
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
+        await fetch("/api/battle/end", { method: "POST", body: JSON.stringify({projectType: projectType})});
         const url = String(formData.get("url"))
         const description = String(formData.get("description"))
         const r = await fetch("/api/battle/scraps", {
@@ -156,7 +156,7 @@ export default function BattleButton(){
             { isLoading 
                 ? <Button>Loading...</Button>
                 : isBattling 
-                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle", { method: "POST", body: JSON.stringify({projectType: projectType})}); setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
+                    ? <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
                     : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}} >START BATTLE</Button>
             }
         </div>
@@ -223,17 +223,19 @@ interface States {
 }
 
 function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {states: States, boss: Boss, closeAction: any, weaponMultiplier: number, data: Battle}){
-    const damage = determineDamage(data["duration"], weaponMultiplier)
-    const treasure = determineTreasure(data["duration"], weaponMultiplier)
-    const experience = determineExperience(data["duration"], weaponMultiplier)
+    const duration = (Date.now() - new Date(data["createdAt"]).getTime())/1000
+    const damage = determineDamage(duration, weaponMultiplier)
+    const treasure = determineTreasure(duration, weaponMultiplier)
+    const experience = determineExperience(duration, weaponMultiplier)
+    
     return (
-        <Modal isOpen={states.isFinishedOpen} setIsOpen={states.setIsFinishedOpen} showClose={false}>
+        <Modal isOpen={states.isFinishedOpen} setIsOpen={states.setIsFinishedOpen} showClose={true}>
             <h1 className = "text-3xl md:text-5xl py-4 align-middle">
             <svg xmlns="http://www.w3.org/2000/svg" className = "inline size-6 md:size-12 mr-2 md:mr-4" fill="#fff" viewBox="0 0 256 256"><path d="M216,32H152a8,8,0,0,0-6.34,3.12l-64,83.21L72,108.69a16,16,0,0,0-22.64,0l-12.69,12.7a16,16,0,0,0,0,22.63l20,20-28,28a16,16,0,0,0,0,22.63l12.69,12.68a16,16,0,0,0,22.62,0l28-28,20,20a16,16,0,0,0,22.64,0l12.69-12.7a16,16,0,0,0,0-22.63l-9.64-9.64,83.21-64A8,8,0,0,0,224,104V40A8,8,0,0,0,216,32ZM52.69,216,40,203.32l28-28L80.68,188Zm70.61-8L48,132.71,60.7,120,136,195.31ZM208,100.06l-81.74,62.88L115.32,152l50.34-50.34a8,8,0,0,0-11.32-11.31L104,140.68,93.07,129.74,155.94,48H208Z"></path></svg>
                 Battle Summary
             </h1>
                 { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", boss["name"]) } <span className = "text-accent font-bold">Boss HP: {boss.health}</span>
-                <p>Your session was {(data["duration"]/3600).toFixed(2) + " hours long (" + (data["duration"]/60).toFixed(2) + " minutes)"}</p>
+                <p>Your session was {(duration/3600).toFixed(2) + " hours long (" + (duration/60).toFixed(2) + " minutes)"}</p>
             <div className = "md:grid gap-4 md:grid-cols-2">
             <div>
             <h2>Prizes</h2>

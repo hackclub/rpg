@@ -38,8 +38,8 @@ export default function Signpost({className}: {className: string}){
                 <Tooltip id="experience"/>
 
                 <StatPill>
-                    <img alt={`${session.data?.user.name}'s profile picture`}src = {session.data?.user.image!} className="inline size-4 rounded-full"/>
-                    { session.data?.user.name } 
+                    <img alt={`${session.data?.user.nickname}'s profile picture`}src = {session.data?.user.image!} className="inline size-4 rounded-full"/>
+                    { session.data?.user.nickname } 
                 </StatPill>
                     <StatPill>
                     <span data-tooltip-id="experience" data-tooltip-content={String(session.data?.user.experience) + " exp"}>

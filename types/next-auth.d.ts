@@ -7,6 +7,7 @@ declare module "next-auth" {
       attacking?: boolean;
       experience?: number;
       role?: string;
+      nickname?: string;
     } & DefaultSession["user"];
   }
 

@@ -10,6 +10,7 @@ async function main(){
         name: "Admin",
         email: "example@mail.com",
         providerAccountId: "example",
+        nickname: "admin",
         role: "admin"
       }
     })
