@@ -123,7 +123,6 @@ export default function BattleButton(){
                     "projectName": selectedProject !== "_other" ? selectedProject : customProject.replace(/[^a-zA-Z0-9-]/g, ''),
                     "projectType": projectType,
                     "effect": newProjectEffect as string,
-                    "multiplier": multiplier
                 }) 
             }); 
         setIsOpen(false); 
@@ -157,7 +156,7 @@ export default function BattleButton(){
             { isLoading 
                 ? <Button>Loading...</Button>
                 : isBattling 
-                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle", { method: "POST", body: JSON.stringify({multiplier: weaponMultiplier, projectType: projectType})}); setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
+                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle", { method: "POST", body: JSON.stringify({projectType: projectType})}); setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
                     : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}} >START BATTLE</Button>
             }
         </div>

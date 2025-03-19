@@ -6,10 +6,11 @@ import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
 import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
 
-async function onBattleCompletion(search: { where: { email: string } }, userId: string, weaponMultiplier: number){
+async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = await getLatestSessionDetails(userId)
+    const weaponMultiplier = latestSession?.multiplier ? latestSession?.multiplier : 1
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
@@ -74,11 +75,9 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
 
 
 export async function POST(request: NextRequest){
-    const body = await request.json()
-    const projectName = body["projectName"] 
-    const multiplier = body["multiplier"]
-    const effect = body["effect"]
     const session = await auth();
+    const body = await request.json()
+
 
     if (!session){
         return NextResponse.json({error: "Unauthed", status: 401})
@@ -91,10 +90,39 @@ export async function POST(request: NextRequest){
     }
     // End battling session
     if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
-        onBattleCompletion(search, session?.user.id!, multiplier)
+        onBattleCompletion(search, session?.user.id!)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
 
     } else {
+        const projectName = body["projectName"] 
+        const effect = body["effect"]
+    
+        // fetch the equipped weapon from server 
+        const getCurrentEquippedWeapon = (await prisma.item.findMany({
+            where: {
+                user:  {
+                    email: session?.user.email!
+                    },
+                userEquipped: true
+                }
+            }))[0]
+    
+            let multiplier
+    
+            if (!getCurrentEquippedWeapon){
+                multiplier = 1
+            } else {
+                multiplier = getCurrentEquippedWeapon["multiplier"]
+            }
+    
+            if (effect == "weakness"){
+                multiplier *= 2
+    
+            } else if (effect == "strength"){
+                multiplier /= 2
+            } else {
+                
+            }
         // idfk get the project id from name 
         const actualProjectId = await prisma.project.findFirst({
             where: {
@@ -102,7 +130,7 @@ export async function POST(request: NextRequest){
                     name: projectName
                 }
         })
-        console.log(session.user.id, (await getActiveBossDetails())!["id"],actualProjectId!["id"], effect )
+        console.log(session.user.id, (await getActiveBossDetails())!["id"],actualProjectId!["id"], effect)
         const res = await prisma.battle.create({
             data: {
                 userId: session?.user.id!,
