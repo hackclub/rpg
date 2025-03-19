@@ -168,7 +168,7 @@ export default function BattleButton(){
                 <div className = "col-span-1 flex flex-col gap-2">
                         <div className = "flex flex-col gap-2">
                             <label htmlFor="project" className = "font-bold text-accent">What project are you working on?</label>
-                            <select required className="flex flex-col gap-1" name = "project" id="project" defaultValue="_select" form="battleStats" onChange={(e) => {setSelectedProject(e.target.value)}}>
+                            <select required className="flex flex-col gap-1 *:bg-darker" name = "project" id="project" defaultValue="_select" form="battleStats" onChange={(e) => {setSelectedProject(e.target.value)}}>
                                 <option disabled value = "_select">[Select a project]</option> 
                                 {projects && projects.map((project: any, index: number) => /* i really cbf to fix the type rn */
                                     <option key={index} value = {project.name}>{project.name}</option>
@@ -182,7 +182,7 @@ export default function BattleButton(){
 
                         <div className = "flex flex-col gap-2">
                         <label htmlFor="type" className = "font-bold text-accent">What type of project is it?</label>
-                            <select form="battleStats" className="flex flex-col gap-1" name = "type" id="type" defaultValue="_select" onChange={(e) => {setProjectType(e.target.value)}} required>
+                            <select form="battleStats" className="flex flex-col gap-1 *:bg-darker" name = "type" id="type" defaultValue="_select" onChange={(e) => {setProjectType(e.target.value)}} required>
                                 <option disabled value = "_select">[Select a type]</option> 
                                 <option key="game" value = "Game development">Game development</option>
                                 <option key="web" value = "Web development">Web development</option>
