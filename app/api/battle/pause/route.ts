@@ -6,7 +6,7 @@ import { isCurrentlyBattling, getLatestSessionDetails } from "@/lib/prisma";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 
-export async function PUT({request}: {request: NextRequest}){
+export async function PUT(){
     const session = await auth();
 
     if (!session){
