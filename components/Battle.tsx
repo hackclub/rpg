@@ -31,7 +31,7 @@ export default function BattleButton(){
     const urls = [
         "/api/battle/status?query=currently", 
         "/api/battle/status?query=latest", 
-        "/api/boss/status", 
+        "/api/boss/status?query=all", 
         "/api/project/status"
     ]
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
@@ -54,7 +54,7 @@ export default function BattleButton(){
         }
       }, [data, projectType, weaponMultiplier])
 
-    let projects, newProjectEffect: string, newProjectType: string
+    let projects, newProjectEffect: string, newProjectType: string, mostRecentBoss
 
     
     if (data){
@@ -63,8 +63,7 @@ export default function BattleButton(){
 
         projects = Array.from(
             new Map(projects.map((item: any)=> [item.name, item])).values()
-          );
-    }
+          );    }
 
     function clearStates(){
         setSelectedProject("")
@@ -156,7 +155,7 @@ export default function BattleButton(){
             { isLoading 
                 ? <Button>Loading...</Button>
                 : isBattling 
-                    ? <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true);  mutate()}}>END BATTLE</Button>
+                    ? <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true); mutate()}}>END CURRENT BATTLE</Button>
                     : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}} >START BATTLE</Button>
             }
         </div>
@@ -207,7 +206,8 @@ export default function BattleButton(){
          </Modal>
 
          {/* finish session modal */}
-         { data && data[1] && <SuccessModal states={{isFinishedOpen, setIsFinishedOpen, projectType, setProjectType, projectEffect, setProjectEffect}} data={data[1]} boss={data[2]} closeAction={acceptBattleRewards} weaponMultiplier={weaponMultiplier}/> }
+         { data && data[1] && <SuccessModal states={{isFinishedOpen, setIsFinishedOpen, projectType, setProjectType, projectEffect, setProjectEffect}} data={data[1]} closeAction={acceptBattleRewards} weaponMultiplier={weaponMultiplier}/> }
+        
         </>
     )
 }
@@ -222,11 +222,12 @@ interface States {
     setProjectEffect: (value: any) => void
 }
 
-function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {states: States, boss: Boss, closeAction: any, weaponMultiplier: number, data: Battle}){
+function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: States, closeAction: any, weaponMultiplier: number, data: Battle}){
     const duration = (Date.now() - new Date(data["createdAt"]).getTime())/1000
     const damage = determineDamage(duration, weaponMultiplier)
     const treasure = determineTreasure(duration, weaponMultiplier)
     const experience = determineExperience(duration, weaponMultiplier)
+    const bossAssociatedWithSession = (data as any)["boss"]
     
     return (
         <Modal isOpen={states.isFinishedOpen} setIsOpen={states.setIsFinishedOpen} showClose={true}>
@@ -234,7 +235,7 @@ function SuccessModal({states, boss, closeAction, data, weaponMultiplier}: {stat
             <svg xmlns="http://www.w3.org/2000/svg" className = "inline size-6 md:size-12 mr-2 md:mr-4" fill="#fff" viewBox="0 0 256 256"><path d="M216,32H152a8,8,0,0,0-6.34,3.12l-64,83.21L72,108.69a16,16,0,0,0-22.64,0l-12.69,12.7a16,16,0,0,0,0,22.63l20,20-28,28a16,16,0,0,0,0,22.63l12.69,12.68a16,16,0,0,0,22.62,0l28-28,20,20a16,16,0,0,0,22.64,0l12.69-12.7a16,16,0,0,0,0-22.63l-9.64-9.64,83.21-64A8,8,0,0,0,224,104V40A8,8,0,0,0,216,32ZM52.69,216,40,203.32l28-28L80.68,188Zm70.61-8L48,132.71,60.7,120,136,195.31ZM208,100.06l-81.74,62.88L115.32,152l50.34-50.34a8,8,0,0,0-11.32-11.31L104,140.68,93.07,129.74,155.94,48H208Z"></path></svg>
                 Battle Summary
             </h1>
-                { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", boss["name"]) } <span className = "text-accent font-bold">Boss HP: {boss.health}</span>
+                { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", bossAssociatedWithSession["name"]) } <span className = "text-accent font-bold">Boss HP: {bossAssociatedWithSession.health}</span>
                 <p>Your session was {(duration/3600).toFixed(2) + " hours long (" + (duration/60).toFixed(2) + " minutes)"}</p>
             <div className = "md:grid gap-4 md:grid-cols-2">
             <div>

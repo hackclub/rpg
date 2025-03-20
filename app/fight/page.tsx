@@ -9,7 +9,8 @@ import Loading from "../../components/common/Loading";
 import Button from "@/components/common/Button";
 
 export default function Fight(){
-    const { data, error, isLoading } = useSWR(["/api/boss/status?query=all"], multiFetcher, {
+    const { data, error, isLoading } = useSWR(
+        ["/api/boss/status?query=all", "/api/battle/status?query=currently", "/api/battle/status?query=latest"], multiFetcher, {
         refreshInterval: 250
     })
     if (error){
@@ -24,7 +25,15 @@ export default function Fight(){
             <Loading/>
         )
     }
-    const bosses = data![0]
+    let bosses, currentlyBattling: any, bossInLatestSession: any
+
+    if (data){
+        bosses = data[0]
+        currentlyBattling = data[1]["battling"]
+    }
+    if (data && data[2]){
+        bossInLatestSession = data[2]["boss"]["name"]
+    }
 
     return (
         <GeneralLayout title = "Fight!">
@@ -46,11 +55,12 @@ export default function Fight(){
                             <p><b className = "text-accent">Weakness: </b>{boss.weakness} projects do double damage!</p>
                         </div>
 
-                        { boss.health > 0 
+                        { boss.health > 0 || (currentlyBattling && bossInLatestSession == boss.name)
                             ? <BattleButton/> 
                             : <div className = "mx-auto flex items-center flex-col text-sm">
-                                <Button disabled>DEFEATED!</Button>
-                              </div>}
+                                    <Button disabled>DEFEATED!</Button>
+                              </div>
+                            }
                     </div>
                 </div>
                 )}

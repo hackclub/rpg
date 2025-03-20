@@ -27,28 +27,30 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             }
         })
     const currentBossData = (await getActiveBossDetails())!
-
-    if (currentBossData.health - determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier) <= 0){
-        const setBossDeath = await prisma.boss.updateMany({
-            where: {
-                active: true
-            },
-            data: { 
-                health: 0,
-                userId: userId,
-                active: false
-            }
-        })
-    } else { 
-    
-        const reduceBossHP = await prisma.boss.update({
-            where: {
-                id: currentBossData["id"]
-            },
-            data: {
-                health: { decrement: determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier)}
-            }
-        })
+    console.log("AAAJSLKSJFKLJFKLDJFKLDJF", currentBossData)
+    if (currentBossData){
+        if (currentBossData.health - determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier) <= 0){
+            const setBossDeath = await prisma.boss.updateMany({
+                where: {
+                    active: true
+                },
+                data: { 
+                    health: 0,
+                    userId: userId,
+                    active: false
+                }
+            })
+        } else { 
+        
+            const reduceBossHP = await prisma.boss.update({
+                where: {
+                    id: currentBossData["id"]
+                },
+                data: {
+                    health: { decrement: determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier)}
+                }
+            })
+        }
     }
 
     // 3. update user's battling status + add rewards

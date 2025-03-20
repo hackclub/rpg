@@ -93,7 +93,13 @@ export async function getLatestSessionDetails(userId: string){
             createdAt: true,
             effect: true,
             project: true,
-            multiplier: true
+            multiplier: true,
+            boss: {
+                select: {
+                    name: true,
+                    health: true
+                }
+            }
         }
     })
     return latestSession
