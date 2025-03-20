@@ -156,7 +156,7 @@ export default function BattleButton(){
             { isLoading 
                 ? <Button>Loading...</Button>
                 : isBattling && isPaused
-                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle/unpause", { method: "PUT" }); mutate()}}>UNPAUSE BATTLE</Button>
+                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle/resume", { method: "PUT" }); mutate()}}>UNPAUSE BATTLE</Button>
                     : isBattling && !isPaused 
                         ? <>
                             <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true); mutate()}}>END CURRENT BATTLE</Button>
