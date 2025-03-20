@@ -5,8 +5,7 @@ import StatPill from "@/components/common/StatPill"
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { multiFetcher } from "@/lib/fetch"
-import { Boss, Project } from "@/types"
-import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
+import { determineDamage, determineTreasure, determineExperience, determineTimeSpentPaused } from "@/lib/stats";
 import Items from "./ItemInventory"
 import { Battle } from "@prisma/client"
 import { useSession } from "next-auth/react"
@@ -21,6 +20,7 @@ const battleCompleteFlavourText = [
 export default function BattleButton(){
     const [ isOpen, setIsOpen ] = useState(false)
     const [ isFinishedOpen, setIsFinishedOpen ] = useState(false)
+    const [ isCancelOpen, setIsCancelOpen ] = useState(false)
     const [ weaponMultiplier, setWeaponMultiplier ] = useState(1)
     const [ selectedProject, setSelectedProject ] = useState("")
     const [ customProject, setCustomProject ] = useState("")
@@ -44,7 +44,7 @@ export default function BattleButton(){
 
     })
 
-    let isBattling 
+    let isBattling, isPaused
 
     useEffect(() => {
         if (data){
@@ -59,6 +59,7 @@ export default function BattleButton(){
     
     if (data){
         isBattling = data[0]["battling"]
+        isPaused = data[0]["paused"]
         projects = data[3]
 
         projects = Array.from(
@@ -154,9 +155,19 @@ export default function BattleButton(){
         <div>
             { isLoading 
                 ? <Button>Loading...</Button>
-                : isBattling 
-                    ? <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true); mutate()}}>END CURRENT BATTLE</Button>
-                    : <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}} >START BATTLE</Button>
+                : isBattling && isPaused
+                    ? <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle/unpause", { method: "PUT" }); mutate()}}>UNPAUSE BATTLE</Button>
+                    : isBattling && !isPaused 
+                        ? <>
+                            <Button className = "mx-auto w-max" onClickAction={async () => { setIsFinishedOpen(true); mutate()}}>END CURRENT BATTLE</Button>
+                            
+                            <div className = "flex flex-col md:flex-row *:text-xs"> 
+                                <Button className = "mx-auto w-max" onClickAction={async () => { await fetch("/api/battle/pause", { method: "PUT" }); mutate()}}>PAUSE BATTLE</Button>
+                                <Button className = "mx-auto w-max" onClickAction={async () => { setIsCancelOpen(true); mutate()}}>CANCEL BATTLE</Button>
+                            </div>
+                            </>
+                        :  <Button className = "mx-auto w-max" onClickAction={async () => { setIsOpen(true); mutate()}}> START BATTLE </Button>
+
             }
         </div>
         {/* start session modal */}
@@ -207,7 +218,7 @@ export default function BattleButton(){
 
          {/* finish session modal */}
          { data && data[1] && <SuccessModal states={{isFinishedOpen, setIsFinishedOpen, projectType, setProjectType, projectEffect, setProjectEffect}} data={data[1]} closeAction={acceptBattleRewards} weaponMultiplier={weaponMultiplier}/> }
-        
+        <ConfirmCancelModal isCancelOpen={isCancelOpen} setIsCancelOpen={setIsCancelOpen}/>
         </>
     )
 }
@@ -223,7 +234,9 @@ interface States {
 }
 
 function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: States, closeAction: any, weaponMultiplier: number, data: Battle}){
-    const duration = (Date.now() - new Date(data["createdAt"]).getTime())/1000
+    const timeSpentPaused = (determineTimeSpentPaused(data["timesPaused"], data["timesUnpaused"])).reduce((pSum, a) => pSum + a, 0)
+    console.log(timeSpentPaused, "seconds spent paused from success modal")
+    const duration = (Date.now() - new Date(data["createdAt"]).getTime())/1000 - timeSpentPaused
     const damage = determineDamage(duration, weaponMultiplier)
     const treasure = determineTreasure(duration, weaponMultiplier)
     const experience = determineExperience(duration, weaponMultiplier)
@@ -236,7 +249,7 @@ function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: St
                 Battle Summary
             </h1>
                 { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", bossAssociatedWithSession["name"]) } <span className = "text-accent font-bold">Boss HP: {bossAssociatedWithSession.health}</span>
-                <p>Your session was {(duration/3600).toFixed(2) + " hours long (" + (duration/60).toFixed(2) + " minutes)"}</p>
+                <p>You spent {(duration/3600).toFixed(2) + " hours (" + (duration/60).toFixed(2) + " minutes)"} battling! You spent {(timeSpentPaused/60).toFixed(2)} minutes paused.</p>
             <div className = "md:grid gap-4 md:grid-cols-2">
             <div>
             <h2>Prizes</h2>
@@ -274,6 +287,26 @@ function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: St
             </div>
             </div>
 
+        </Modal>
+    )
+}
+
+function ConfirmCancelModal({isCancelOpen, setIsCancelOpen}: {isCancelOpen: boolean, setIsCancelOpen: (value: any) => void}){
+    return (
+        <Modal isOpen={isCancelOpen} setIsOpen={setIsCancelOpen}>
+            <div className = "flex flex-col h-full">
+                <h1 className = "text-3xl md:text-5xl py-4 align-middle">
+                <svg xmlns="http://www.w3.org/2000/svg" className = "inline size-6 md:size-12 mr-2 md:mr-4" fill="#fff" viewBox="0 0 256 256"><path d="M216,32H152a8,8,0,0,0-6.34,3.12l-64,83.21L72,108.69a16,16,0,0,0-22.64,0l-12.69,12.7a16,16,0,0,0,0,22.63l20,20-28,28a16,16,0,0,0,0,22.63l12.69,12.68a16,16,0,0,0,22.62,0l28-28,20,20a16,16,0,0,0,22.64,0l12.69-12.7a16,16,0,0,0,0-22.63l-9.64-9.64,83.21-64A8,8,0,0,0,224,104V40A8,8,0,0,0,216,32ZM52.69,216,40,203.32l28-28L80.68,188Zm70.61-8L48,132.71,60.7,120,136,195.31ZM208,100.06l-81.74,62.88L115.32,152l50.34-50.34a8,8,0,0,0-11.32-11.31L104,140.68,93.07,129.74,155.94,48H208Z"></path></svg>
+                    Cancel Battle
+                </h1>
+                <div className = "self-center items-center justify-center grow  gap-2 flex flex-col h-full">
+                    <p className = "text-2xl">Are you sure you want to cancel this battle?</p>
+                    <p>This battle will not be saved. You <span className = "text-accent">will not</span> gain any treasure or experience, or do any damage to the current boss.</p>
+                    <p>If you wanted to end the battle and submit your scraps, click <span className = "text-accent">Close</span>, then click <span className = "text-accent">End Current Battle</span>.</p>
+                </div>
+                <Button type="submit" className = "w-max mx-auto grow" onClickAction={async () => {await fetch("/api/battle/cancel", { method: "PUT"}); setIsCancelOpen(false)} }>CANCEL BATTLE</Button>
+
+            </div>
         </Modal>
     )
 }

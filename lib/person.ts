@@ -1,3 +1,6 @@
+'use server'
+import { User } from "@prisma/client"
+import prisma from "./prisma"
 export async function getPersonData(email: string){
     const data = await fetch(`https://slack.com/api/users.lookupByEmail?email=${email}`,
         { 
@@ -7,7 +10,40 @@ export async function getPersonData(email: string){
             }
         }
     ).then(r=>r.json())
-    const display_name = data["user"]["profile"]["display_name_normalized"]
-    const real_name = data["user"]["profile"]["real_name"]
+    let display_name = "User"
+    let real_name = "User"
+    try {
+        display_name = data["user"]["profile"]["display_name_normalized"]
+        real_name = data["user"]["profile"]["real_name"]
+    } catch {
+        // progress
+    }
     return { display_name, real_name }
+}
+
+async function migrateData(){
+    const people = await prisma.user.findMany({
+        where: {
+            NOT: {
+                email: "example@mail.com"
+            }
+        },
+        select: {
+            email: true,
+            id: true
+        }
+    })
+    for (let person = 0; person < people.length; person++){
+        const { display_name, real_name} = await getPersonData(((people as any)[person])["email"])
+        await new Promise(r => setTimeout(r, 3000));
+        const r = await prisma.user.update({
+            where: {
+              id: (people as any)[person].id
+           },
+            data: {
+              nickname: display_name ? display_name: real_name
+            }
+        })
+    }
+
 }

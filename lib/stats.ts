@@ -19,3 +19,18 @@ export function determineTreasure(duration: number, multiplier: number){
 export function determineExperience(duration: number, multiplier: number){
     return Number((duration * 10 * multiplier).toFixed(0))
 }
+
+export function determineTimeSpentPaused(timesPaused: any, timesUnpaused: any){
+    let differences = []
+    for (let i = 0; i < timesPaused.length; i++){
+        console.log("paused at", timesPaused[i])
+        console.log("unpaused at", timesUnpaused[i])
+
+        let unpausedConverted = (new Date(timesUnpaused[i])).getTime()
+        let pausedConverted = (new Date(timesPaused[i])).getTime()
+        differences.push(( Math.abs(pausedConverted - unpausedConverted)/1000)
+        )
+    }
+    return differences
+
+}

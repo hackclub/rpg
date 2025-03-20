@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Battle" ADD COLUMN     "timePaused" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "timesPaused" TIMESTAMP(3)[] DEFAULT ARRAY[]::TIMESTAMP(3)[],
+ADD COLUMN     "timesUnpaused" TIMESTAMP(3)[] DEFAULT ARRAY[]::TIMESTAMP(3)[];
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "paused" BOOLEAN NOT NULL DEFAULT false;

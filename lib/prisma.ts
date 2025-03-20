@@ -73,7 +73,8 @@ export async function isCurrentlyBattling(email: string){
             email: email
         },
         select: {
-            battling: true
+            battling: true,
+            paused: true
         }
     })
     return (await getBattlingStatus)
@@ -94,6 +95,9 @@ export async function getLatestSessionDetails(userId: string){
             effect: true,
             project: true,
             multiplier: true,
+            timePaused: true,
+            timesPaused: true,
+            timesUnpaused: true,
             boss: {
                 select: {
                     name: true,

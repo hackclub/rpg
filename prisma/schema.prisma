@@ -21,6 +21,7 @@ model User {
   updatedAt           DateTime  @updatedAt
   experience          Int       @default(0)
   battling            Boolean   @default(false)
+  paused              Boolean   @default(false) // merge this with above for v2
   bossesSlain         Boss[]
   accounts            Account[]
   battles             Battle[]
@@ -94,20 +95,23 @@ model Item {
 }
 
 model Battle {
-  id          Int      @id @default(autoincrement())
-  bossId      Int
-  userId      String
-  duration    Int      @default(0)
-  damage      Int      @default(0) // damage done to the boss
-  boss        Boss     @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
-  effect      String?  // was this a strength/weakness or none of the boss.
-  multiplier  Float    // damage multiplier in accordance with this being a strength or weakness
-  projectId   Int 
-  project     Project  @relation(fields: [projectId], references: [id]) // project that this battle is associated with
-  scrap       Scrap[]    // scrap submitted for this project.
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id])
+  id            Int        @id @default(autoincrement())
+  bossId        Int
+  userId        String
+  duration      Int        @default(0)
+  damage        Int        @default(0) // damage done to the boss
+  boss          Boss       @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
+  effect        String?    // was this a strength/weakness or none of the boss.
+  multiplier    Float      // damage multiplier in accordance with this being a strength or weakness
+  projectId     Int 
+  project       Project    @relation(fields: [projectId], references: [id]) // project that this battle is associated with
+  scrap         Scrap[]     // scrap submitted for this project.
+  timePaused    Int        @default(0) // total seconds battle was paused for 
+  timesPaused   DateTime[] @default([]) // log each time the session was paused
+  timesUnpaused  DateTime[] @default([]) // log each time the session was unpaused (yeah i know this is really janky pft)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  user          User       @relation(fields: [userId], references: [id])
 }
 
 model Project { // ideally this shouldn't really be used, but if people haven't set up time tracking...

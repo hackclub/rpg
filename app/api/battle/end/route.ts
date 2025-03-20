@@ -4,20 +4,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
-import { determineDamage, determineTreasure, determineExperience } from "@/lib/stats";
+import { determineDamage, determineTreasure, determineExperience, determineTimeSpentPaused } from "@/lib/stats";
+
 
 async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
     let latestSession = (await getLatestSessionDetails(userId))
     const weaponMultiplier = latestSession?.multiplier ? latestSession?.multiplier : 1
+    const totalSecondsPaused = determineTimeSpentPaused(latestSession?.timesPaused, latestSession?.timesUnpaused)
+    console.log(totalSecondsPaused.reduce((pSum, a) => pSum + a, 0), "from api")
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
           },
           data: {
-            duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000, // duration of attack session in seconds
-            },
+            duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000 - totalSecondsPaused.reduce((pSum, a) => pSum + a, 0), // duration of attack session in seconds
+            timePaused: totalSecondsPaused.reduce((pSum, a) => pSum + a, 0)
+        },
         });
     // 2. update boss hp according to battle duration
     const damageDoneLatestSession = await prisma.battle.findFirst(
@@ -89,6 +93,7 @@ export async function POST(request: NextRequest){
         }
     }
     // End battling session
+
     if ((await isCurrentlyBattling(session?.user.email!))!["battling"]){
         onBattleCompletion(search, session?.user.id!)
         return NextResponse.json({message: "Session - Ended - False", status: 200}) 
