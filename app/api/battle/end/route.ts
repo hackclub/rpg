@@ -9,7 +9,7 @@ import { determineDamage, determineTreasure, determineExperience } from "@/lib/s
 async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
     // 1. update duration of attack session and damage done in attack session
-    let latestSession = await getLatestSessionDetails(userId)
+    let latestSession = (await getLatestSessionDetails(userId))
     const weaponMultiplier = latestSession?.multiplier ? latestSession?.multiplier : 1
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
@@ -27,8 +27,8 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             }
         })
     const currentBossData = (await getActiveBossDetails())!
-    console.log("AAAJSLKSJFKLJFKLDJFKLDJF", currentBossData)
-    if (currentBossData){
+    const bossTiedToAttackSession = latestSession!["boss"]["name"]
+    if (currentBossData && currentBossData.name == bossTiedToAttackSession){
         if (currentBossData.health - determineDamage(damageDoneLatestSession!["duration"], weaponMultiplier) <= 0){
             const setBossDeath = await prisma.boss.updateMany({
                 where: {
