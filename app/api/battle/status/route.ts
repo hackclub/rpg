@@ -6,6 +6,11 @@ import { auth } from "@/auth"
 
 export async function GET(request: NextRequest){
     const session = await auth();
+
+    if (!session){
+        return NextResponse.json({error: "Unauthed", status: 401})
+    }
+
     const query = request.nextUrl.searchParams.get("query")
     if (query === "currently"){
         const attackStatus = (await isCurrentlyBattling(session?.user.email!))!

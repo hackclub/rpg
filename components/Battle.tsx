@@ -135,7 +135,7 @@ export default function BattleButton(){
         const formData = new FormData(e.currentTarget);
         await fetch("/api/battle/end", { method: "POST", body: JSON.stringify({projectType: projectType})});
         const url = String(formData.get("url"))
-        const description = String(formData.get("description"))
+        const description = String(formData.get("description")).replace(/[<>\"'`;(){}[\]=]/g, '')
         const r = await fetch("/api/battle/scraps", {
             method: "POST",
             body: JSON.stringify({
@@ -235,7 +235,6 @@ interface States {
 
 function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: States, closeAction: any, weaponMultiplier: number, data: Battle}){
     const timeSpentPaused = (determineTimeSpentPaused(data["timesPaused"], data["timesUnpaused"])).reduce((pSum, a) => pSum + a, 0)
-    console.log(timeSpentPaused, "seconds spent paused from success modal")
     const duration = (Date.now() - new Date(data["createdAt"]).getTime())/1000 - timeSpentPaused
     const damage = determineDamage(duration, weaponMultiplier)
     const treasure = determineTreasure(duration, weaponMultiplier)
@@ -280,7 +279,7 @@ function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: St
                         <textarea placeholder="Something like 'I improved the UI of the form elements and fixed a bug that was stopping things from uploading.'" className = "resize-y" required form="scrapsSubmit" name="description" id="description"></textarea>
                         <label className = "font-bold text-accent block">What did you work on? Upload some proof!</label> 
                         <span className = "text-sm">(Go to <a target="_blank" className="link" href = "https://app.slack.com/client/T0266FRGM/C016DEDUL87">#cdn</a>, upload a scrap,  and put the link here)</span>
-                        <input placeholder="https://...." required form="scrapsSubmit" name="url" type = "text" id="url"></input>
+                        <input type="url" placeholder="https://...." required form="scrapsSubmit" name="url" id="url"></input>
                     </span>
                     <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto">CLAIM REWARDS</Button>
                 </Form>

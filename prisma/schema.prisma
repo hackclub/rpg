@@ -134,6 +134,7 @@ model Scrap { // proof of submitted project
   battle      Battle    @relation(fields: [battleId], references: [id]) // battle that this scrap is associated with
   userId      String
   user        User      @relation(fields: [userId], references: [id]) // user that created this scrap
+  reviewed    Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

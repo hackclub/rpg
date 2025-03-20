@@ -6,6 +6,9 @@ import { auth } from "@/auth";
 
 export async function POST(request: NextRequest){
     const session = await auth();
+    if (!session){ 
+        return NextResponse.json({error: "Unauthed", status: 401})
+    }
     const item = (await request.json())["name"]
     const unequipItem = await prisma.item.updateMany({
         where: {

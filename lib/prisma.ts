@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { Item, Boss } from "@/types"
- 
+
 export const inventoryData: Item[] = [
     {
         name: "Wooden sword",

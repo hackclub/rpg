@@ -2,11 +2,18 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Metadata } from "next";
 
 import Signpost from "@/components/Signpost";
 import Loading from "@/components/common/Loading";
 
-export default function GeneralLayout({children, title}: {children?: React.ReactNode, title: string}){
+
+type Props = {
+    children: React.ReactNode,
+    title: string
+  };
+
+export default function GeneralLayout({children, title}: Props){
     const session = useSession();
     const router = useRouter();
     useEffect(() => {

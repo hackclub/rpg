@@ -6,12 +6,10 @@ import { auth } from "@/auth";
 import { getActiveBossDetails } from "@/lib/prisma";
 export async function POST(request: NextRequest){
     const session = await auth();
-    const body = await request.json()
-
-
     if (!session){
         return NextResponse.json({error: "Unauthed", status: 401})
     }
+    const body = await request.json()
 
     const search = {
         where: {

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Are you ready to level up?",
 };
 
-export default function RootLayout({children,}: Readonly<{ children: React.ReactNode;}>) {
+export default function RootLayout({children}: Readonly<{ children: React.ReactNode;}>) {
   return (
     <html lang="en">
       <SessionProvider>
