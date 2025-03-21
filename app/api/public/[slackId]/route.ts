@@ -4,9 +4,15 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { determineLevel } from "@/lib/stats";
 
+type returnedData = {
+    treasure: number,
+    experience: number,
+    level?: number
+}
+
 export async function GET(request: NextRequest, { params }: { params: Promise<{ slackId: string }> }){
     const id = (await params).slackId
-    const data = await prisma.user.findFirst({
+    let data = await prisma.user.findFirst({
         where: {
             providerAccountId: id
         },
@@ -14,7 +20,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             treasure: true,
             experience: true
         }
-    })
-    console.log(data)
+    }) as returnedData
+    if (data){
+        data["level"] = determineLevel(data["experience"])
+    }
     return NextResponse.json(data)
 }
