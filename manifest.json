@@ -1,0 +1,29 @@
+{
+    "display_information": {
+        "name": "RPG",
+        "description": "https://rpg.hackclub.com",
+        "background_color": "#3c455e"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "RPG",
+            "always_online": false
+        }
+    },
+    "oauth_config": {
+        "redirect_urls": [
+            "https://rpg.hackclub.com/api/auth/callback/slack"
+        ],
+        "scopes": {
+            "bot": [
+                "users:read",
+                "users:read.email"
+            ]
+        }
+    },
+    "settings": {
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}
