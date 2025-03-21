@@ -3,8 +3,8 @@ import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import { getActiveBossDetails } from "@/lib/prisma";
 import LargePill from "./common/LargePill";
-const shineEffect = `rounded-l-lg bg-accent z-10 h-full text-center focus:outline-none focus:ring focus:ring-slate-500/50 focus-visible:outline-none focus-visible:ring focus-visible:ring-slate-500/50 relative before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(45deg,transparent_25%,theme(colors.white/.5)_50%,transparent_75%,transparent_100%)] dark:before:bg-[linear-gradient(45deg,transparent_25%,theme(colors.white)_50%,transparent_75%,transparent_100%)] before:bg-[length:250%_250%,100%_100%] before:bg-[position:200%_0,0_0] before:bg-no-repeat before:[transition:background-position_0s_ease] hover:before:bg-[position:-100%_0,0_0] hover:before:duration-[1500ms]`
 import { determineLevel } from "@/lib/stats";
+import { shineEffect } from "@/lib/general";
 
 export async function LoadCurrentBoss(){
     const activeBoss = (await getActiveBossDetails())!;
@@ -21,7 +21,7 @@ export async function LoadCurrentBoss(){
             <p>{activeBoss.name}</p>
 
                 <div className = "rounded-lg h-8 w-8/12 bg-white/40 border border-accent/50">
-                    <div className = {shineEffect} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
+                    <div className = {`${shineEffect} w-full h-full relative rounded-l-lg text-center  bg-accent`} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
                 </div>
                 <span>{activeBoss.health} / {activeBoss.maxHealth} HP</span>
 

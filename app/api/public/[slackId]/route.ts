@@ -12,7 +12,7 @@ type returnedData = {
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ slackId: string }> }){
     const id = (await params).slackId
-    let data = await prisma.user.findFirst({
+    const data = await prisma.user.findFirst({
         where: {
             providerAccountId: id
         },
