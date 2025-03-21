@@ -15,7 +15,7 @@
     "@prisma/client": "^6.5.0",
     "@prisma/extension-accelerate": "^1.2.2",
     "fullstory": "^1.0.10",
-    "next": "15.2.1",
+    "next": "15.2.3",
     "next-auth": "^5.0.0-beta.25",
     "prettier": "^3.5.3",
     "prisma": "^6.5.0",
