@@ -21,7 +21,6 @@ export async function GET(request: NextRequest){
             battle: true
         }
     })
-    console.log(response)
 
     return NextResponse.json(response)
 }
