@@ -14,7 +14,7 @@ import { useSWRConfig } from "swr";
 // this entire page is really stupid
 type RelationsProject = Project & {scrap: Scrap[]; battle: RelationsBattle[]}
 type RelationsUser = User & {projects: RelationsProject[]}
-type RelationsBattle = Battle & {scrap: Scrap[]; duration: Number}
+type RelationsBattle = Battle & {scrap: Scrap[]}
 const date = new Date("1970-01-01")
 
 const a: RelationsUser = {
