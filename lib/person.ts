@@ -47,3 +47,19 @@ async function migrateData(){
     }
 
 }
+
+
+async function getTotalHours(){
+    const validSession = (await prisma.battle.findMany({
+        where:
+            {
+                duration: {
+                    lte: 18000
+                }
+            },
+        select: {
+            duration: true
+        }
+    }))
+    return (validSession).reduce((total, battle) => total + battle.duration, 0)/3600;
+}

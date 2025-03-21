@@ -26,10 +26,9 @@ export async function impersonate(slackId: string){
       const r = await prisma.session.update({
             where: { 
                 sessionToken: findSession!["sessionToken"]
-            }, // current user -> you
+            }, 
             data: { 
                 userId: findImpersonateSession!["id"]
-            }, // user you want to control
+            },
         });
-    console.log(r)
     }
