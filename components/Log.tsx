@@ -30,6 +30,7 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
                             <li>{(battle.duration/3600).toFixed(2)} hours ({battle.duration} seconds)</li>
                             <li>{battle.damage} damage</li>
                             <li>{battle.boss.name}</li>
+                            <li>Status: {battle?.scrap?.[0]?.status}</li>
                         </ul>
                     </div>
 
