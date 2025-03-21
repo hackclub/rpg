@@ -10,6 +10,7 @@ import { User, Project, Scrap, Battle} from "@prisma/client";
 import GeneralLayout from "../layouts/general";
 import Button from "@/components/common/Button";
 import { useSWRConfig } from "swr";
+import Impersonate from "@/components/Impersonate";
 
 // this entire page is really stupid
 type RelationsProject = Project & {scrap: Scrap[]; battle: RelationsBattle[]}
@@ -109,7 +110,7 @@ export default function AdminPanel(){
                                 <div className = "">
                                     { selectedUser && 
                                     <div className = "bg-accent/20 p-5">
-                                    <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname}</h2>
+                                    <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-5" key={index}>
                                                 <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>

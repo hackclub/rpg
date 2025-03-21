@@ -13,7 +13,6 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
     let latestSession = (await getLatestSessionDetails(userId))
     const weaponMultiplier = latestSession?.multiplier ? latestSession?.multiplier : 1
     const totalSecondsPaused = determineTimeSpentPaused(latestSession?.timesPaused, latestSession?.timesUnpaused)
-    console.log(totalSecondsPaused.reduce((pSum, a) => pSum + a, 0), "from api")
     const updateUserBattlingSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]

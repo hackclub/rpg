@@ -1,6 +1,8 @@
-'use server'
 import { User } from "@prisma/client"
 import prisma from "./prisma"
+import { auth } from "@/auth"
+import { NextResponse } from "next/server"
+
 export async function getPersonData(email: string){
     const data = await fetch(`https://slack.com/api/users.lookupByEmail?email=${email}`,
         { 
@@ -62,4 +64,17 @@ async function getTotalHours(){
         }
     }))
     return (validSession).reduce((total, battle) => total + battle.duration, 0)/3600;
+}
+
+
+export async function verifyAuth({verifyAdmin = false}: {verifyAdmin: boolean}){
+    const session = await auth()
+    if (!session){
+        return NextResponse.json({error: "Unauthed"}, {status: 401})
+    }
+
+    if (verifyAdmin && session.user.role !== "admin"){
+        return NextResponse.json({ error: "Not an admin." }, { status: 401 })
+    }
+
 }
