@@ -24,6 +24,10 @@ export async function GET(){
                     battle: {
                         include: {
                             scrap: true,
+                            boss: true
+                        },
+                        orderBy: {
+                            createdAt: "asc"
                         }
                     }
                 } 

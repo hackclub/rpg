@@ -11,6 +11,8 @@ import GeneralLayout from "../layouts/general";
 import Button from "@/components/common/Button";
 import { useSWRConfig } from "swr";
 import Impersonate from "@/components/Impersonate";
+import Form from "next/form";
+import { FormEvent } from "react";
 
 // this entire page is really stupid
 type RelationsProject = Project & {scrap: Scrap[]; battle: RelationsBattle[]}
@@ -39,8 +41,6 @@ const a: RelationsUser = {
 export default function AdminPanel(){
     const session = useSession();
     const { mutate } = useSWRConfig()
-
-
     const [ selectedUser, setSelectedUser ] = useState<RelationsUser>(a);
     const [ query, setQuery ] = useState('')
     const { data, error, isLoading} = useSWR(["/api/admin/users"], multiFetcher)
@@ -83,7 +83,23 @@ export default function AdminPanel(){
         const handleSelect = (user: RelationsUser) => {
             setSelectedUser(user)
         }
+
+        async function updateScrap(e: FormEvent<HTMLFormElement>, battleId: number, scrapId: number, projectId: number, userId: string){
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget);
+            const description = String(formData.get("description"))
+            const codeUrl = String(formData.get("codeUrl"))
+            const url = String(formData.get("url"))
+
+            const r = await fetch("/api/admin/scrap/create", { method: "POST", body: JSON.stringify({battleId: battleId, scrapId: scrapId, projectId: projectId, description: description, codeUrl: codeUrl, url: url, userId: userId})})
+        }
         
+        async function updateDuration(e: FormEvent<HTMLFormElement>, battleId: number, ){
+            e.preventDefault(); 
+            const formData = new FormData(e.currentTarget);
+            const duration = String(formData.get("duration"))
+            const r = await fetch("/api/admin/battle/edit", { method: "POST", body: JSON.stringify({battleId: battleId, duration: duration})})
+        }
         return (
             <GeneralLayout title="Admin Panel">
                     { session?.data?.user.role === "admin" &&
@@ -115,13 +131,20 @@ export default function AdminPanel(){
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
                                                 <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
-                                                <p>All Battles</p>
+                                                <p>All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0].status === "approved")).length}/{project.battle.length} approved)</p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
                                                     {project.battle.map((bat: any, index: number) => (
-                                                        <div key = {`battle_${index}`} className = "my-5">
-                                                            <span className = "italic font-bold">Battle #{bat.id} -- ({(new Date(bat.createdAt)).toDateString()}) -- ({(bat.duration/3600).toFixed(2)} hours)</span>
+                                                        <div key = {`${project.id}_battle_${index}`} className = "my-5 flex flex-col">
+                                                            <span className = "italic font-bold">Battle #{bat.id} -- ({(new Date(bat.createdAt)).toDateString()})</span>
+                                                            <span className = "block">{bat.damage} damage done to {bat.boss.name}</span>
+                                                            <span className = "block">({(bat.duration/3600).toFixed(2)}h / {(bat.duration/60).toFixed(2)}m / {bat.duration}s)</span>
+                                                            
+                                                            <Form id={`${project.id}_battle_${index}`}  className = "my-2 sm:grid sm:grid-cols-2" action="javascript:void(0);" onSubmit={(e) => updateDuration(e, bat.id)}>
+                                                                <input form = {`${project.id}_battle_${index}`} placeholder="seconds" required name="duration" id="duration"/>
+                                                                <Button shouldPreventDefault={false} type="submit">UPDATE</Button>
+                                                            </Form>
                                                             {bat.scrap && bat.scrap.map((scr: Scrap, index: number) => 
-                                                                <div key = {index} className = "flex flex-col gap-2 h-full border p-5 my-5 bg-darker/25 rounded-lg">
+                                                                <div key = {index} className = "grow flex flex-col gap-2 border p-5 my-5 bg-darker/25 rounded-lg">
                                                                     <span>Scrap #{scr.id}  - <a className = "text-sm" href = {scr.url}>URL</a></span>
                                                                     <img className = "object-cover aspect-3/2" src = {scr.url}/>
                                                                     <div className = "grow flex flex-col">
@@ -135,7 +158,14 @@ export default function AdminPanel(){
                                                                     </span>
                                                                 </div>   
                                                             )}
+                                                            <Form id={`${project.id}_battle_${index}_scrap`} className = "flex flex-col items-center justify-center *:w-full" action="javascript:void(0);" onSubmit={(e) => updateScrap(e, bat.id, bat.scrap?.[0]?.id, project.id, selectedUser.id)}>
+                                                                <input form ={`${project.id}_battle_${index}_scrap`} placeholder="description" className = "resize-y" required name="description" id="description"/>
+                                                                <input form = {`${project.id}_battle_${index}_scrap`} placeholder="url" className = "resize-y" required name="url" id="url"/>
+                                                                <input form = {`${project.id}_battle_${index}_scrap`} placeholder="code url" className = "resize-y" required name="codeUrl" id="codeUrl"/>
+                                                            <Button shouldPreventDefault={false} type="submit">CREATE/UPDATE SCRAP</Button>
+                                                            </Form>
                                                         </div>
+
                                                     ))}
                                                 </div>
                                             </div>
