@@ -3,10 +3,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getActiveBossDetails, getAllBossDetails} from "@/lib/prisma";
 import { auth } from "@/auth";
+import { verifyAuth } from "@/lib/person";
 export async function GET(request: NextRequest){
     const session = await auth();
-    if (!session){
-        return NextResponse.json({error: "Unauthed", status: 401})
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
     const query =  request.nextUrl.searchParams.get("query")
     if (!query || query == "active"){

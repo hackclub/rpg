@@ -3,11 +3,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-
+import { verifyAuth } from "@/lib/person";
 export async function POST(request: NextRequest){
     const session = await auth();
     if (!session){ 
         return NextResponse.json({error: "Unauthed", status: 401})
+    }
+
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
     const item = (await request.json())["name"]
     const unequipItem = await prisma.item.updateMany({

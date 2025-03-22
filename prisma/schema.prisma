@@ -22,6 +22,7 @@ model User {
   experience          Int       @default(0)
   battling            Boolean   @default(false)
   paused              Boolean   @default(false) // merge this with above for v2
+  blacklisted         Boolean   @default(false)
   bossesSlain         Boss[]
   accounts            Account[]
   battles             Battle[]

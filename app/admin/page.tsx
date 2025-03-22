@@ -31,6 +31,7 @@ const a: RelationsUser = {
     image: null,
     experience: 0,
     battling: false,
+    blacklisted: false,
     paused: false,
     projects: [],
     role: "user"}
@@ -110,7 +111,7 @@ export default function AdminPanel(){
                                 <div className = "">
                                     { selectedUser && 
                                     <div className = "bg-accent/20 p-5">
-                                    <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} <Impersonate user={selectedUser}/></h2>
+                                    <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-5" key={index}>
                                                 <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>

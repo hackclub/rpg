@@ -4,10 +4,13 @@ import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { getActiveBossDetails } from "@/lib/prisma";
+import { verifyAuth } from "@/lib/person";
+
 export async function POST(request: NextRequest){
     const session = await auth();
-    if (!session){
-        return NextResponse.json({error: "Unauthed", status: 401})
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
     const body = await request.json()
 
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest){
                 name: projectName
             }
     })
-    console.log(session.user.id, (await getActiveBossDetails())!["id"],actualProjectId!["id"], effect)
+    console.log(session?.user.id, (await getActiveBossDetails())!["id"],actualProjectId!["id"], effect)
     const res = await prisma.battle.create({
         data: {
             userId: session?.user.id!,

@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import prisma, { isCurrentlyBattling, getLatestSessionDetails, getActiveBossDetails } from "@/lib/prisma";
 import { determineDamage, determineTreasure, determineExperience, determineTimeSpentPaused } from "@/lib/stats";
-
+import { verifyAuth } from "@/lib/person";
 
 async function onBattleCompletion(search: { where: { email: string } }, userId: string){
     // when an attack is triggered as complete: 
@@ -80,6 +80,10 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
 
 export async function POST(request: NextRequest){
     const session = await auth();
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
+    } 
     const body = await request.json()
 
     if (!session){

@@ -3,13 +3,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-
+import { verifyAuth } from "@/lib/person";
 export async function GET(request: NextRequest){
     const session = await auth();
     const query = request.nextUrl.searchParams.get("query")
-
-    if (!session){
-        return NextResponse.json({error: "Unauthed", status: 401})
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
     if (!query || query === "all"){
         const items = await prisma.user.findFirst({

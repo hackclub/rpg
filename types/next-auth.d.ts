@@ -8,6 +8,7 @@ declare module "next-auth" {
       experience?: number;
       role?: string;
       nickname?: string;
+      blacklisted?: boolean;
     } & DefaultSession["user"];
   }
 

@@ -67,14 +67,18 @@ async function getTotalHours(){
 }
 
 
-export async function verifyAuth({verifyAdmin = false}: {verifyAdmin: boolean}){
+export async function verifyAuth({verifyAdmin = false}: {verifyAdmin?: boolean}={}){
     const session = await auth()
     if (!session){
-        return NextResponse.json({error: "Unauthed"}, {status: 401})
+        return {error: "Unauthed"}
+    }
+
+    if (session.user.blacklisted){
+        return {error: "You have been blacklisted."}
     }
 
     if (verifyAdmin && session.user.role !== "admin"){
-        return NextResponse.json({ error: "Not an admin." }, { status: 401 })
+        return { error: "Not an admin." }
     }
 
 }

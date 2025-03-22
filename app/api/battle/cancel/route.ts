@@ -5,13 +5,14 @@ import { isCurrentlyBattling } from "@/lib/prisma";
 import { getLatestSessionDetails } from "@/lib/prisma";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
+import { verifyAuth } from "@/lib/person";
 
 export async function PUT(){
     const session = await auth();
-    if (!session){
-        return NextResponse.json({error: "Unauthed", status: 401})
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
-
     const currently = (await isCurrentlyBattling(session?.user.email!))!
     if (!currently["battling"]){
         return NextResponse.json({error: "Can't cancel a battle if you're not in one", status: 400})

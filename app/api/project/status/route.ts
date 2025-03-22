@@ -3,11 +3,12 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-
+import { verifyAuth } from "@/lib/person";
 export async function GET(){
     const session = await auth();
-    if (!session){
-        return NextResponse.json({error: "Unauthed", status: 401})
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
     const customProjects = await prisma.project.findMany({
         where: 

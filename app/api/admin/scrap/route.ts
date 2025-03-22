@@ -1,17 +1,14 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextResponse, NextRequest } from "next/server";
-
+import { verifyAuth } from "@/lib/person";
 export async function POST(request: NextRequest){
     const session = await auth();
+    const invalidSession = await verifyAuth({verifyAdmin: true})
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
+    }
     const body = await request.json()
-    if (!session){
-        return NextResponse.json({error: "Unauthed"}, {status: 401})
-    }
-
-    if (session.user.role !== "admin"){
-        return NextResponse.json({error: "Not an admin"}, {status: 401})
-    }
 
     const query = request.nextUrl.searchParams.get("query")
     if (query === "approve"){

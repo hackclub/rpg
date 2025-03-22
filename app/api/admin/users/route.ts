@@ -3,22 +3,19 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import prisma from "@/lib/prisma";
+import { verifyAuth } from "@/lib/person";
 
 export async function GET(){
     const session = await auth(); 
-
-    if (!session){
-        return NextResponse.json({error: "Unauthed"}, {status: 401})
+    const invalidSession = await verifyAuth({verifyAdmin: true})
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
     }
-
-    if (session?.user.role !== "admin"){
-        return NextResponse.json({error: "Not an admin."}, {status: 400})
-    } 
-
     const response = await prisma.user.findMany({
         select: {
             name: true,
             nickname: true,
+            providerAccountId: true,
             id: true,
             image: true,
             scraps: true,

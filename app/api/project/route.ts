@@ -3,8 +3,12 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
-
+import { verifyAuth } from "@/lib/person";
 export async function POST(request: NextRequest){
+    const invalidSession = await verifyAuth()
+    if (invalidSession){
+        return NextResponse.json(invalidSession, {status: 401})
+    }
     const session = await auth();
     const body = await request.json()
     if (!session){
