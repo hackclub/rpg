@@ -104,7 +104,7 @@ export default function BattleButton(){
             setProjectEffect("")
         }
 
-        const projectToDB = selectedProject !== "_other" ? selectedProject.replace(/[^a-zA-Z0-9-]/g, '') : customProject.replace(/[^a-zA-Z0-9-]/g, '')
+        const projectToDB = selectedProject !== "_other" ? selectedProject.replace(/[<>\"'`;(){}[\]=]/g, '') : customProject.replace(/[<>\"'`;(){}[\]=]/g, '')
         const createProject = await fetch("/api/project", {
                 method: "POST",
                 body: JSON.stringify(
@@ -119,7 +119,7 @@ export default function BattleButton(){
             method: "POST", 
             body: JSON.stringify(
                 {
-                    "projectName": selectedProject !== "_other" ? selectedProject : customProject.replace(/[^a-zA-Z0-9-]/g, ''),
+                    "projectName": projectToDB,
                     "projectType": projectType,
                     "effect": newProjectEffect as string,
                 }) 
@@ -135,12 +135,14 @@ export default function BattleButton(){
         const formData = new FormData(e.currentTarget);
         await fetch("/api/battle/end", { method: "POST", body: JSON.stringify({projectType: projectType})});
         const url = String(formData.get("url"))
+        const codeUrl = String(formData.get("codeUrl"))
         const description = String(formData.get("description")).replace(/[<>\"'`;(){}[\]=]/g, '')
         const r = await fetch("/api/battle/scraps", {
             method: "POST",
             body: JSON.stringify({
                 url: url,
-                description: description
+                description: description,
+                codeUrl: codeUrl
             })
         })
         setProjectEffect("")
@@ -249,10 +251,9 @@ function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: St
             </h1>
                 { battleCompleteFlavourText[Math.floor(Math.random() * battleCompleteFlavourText.length)].replace("$BOSSNAME", bossAssociatedWithSession["name"]) } <span className = "text-accent font-bold">Boss HP: {bossAssociatedWithSession.health}</span>
                 <p>You spent {(duration/3600).toFixed(2) + " hours (" + (duration/60).toFixed(2) + " minutes)"} battling! You spent {(timeSpentPaused/60).toFixed(2)} minutes paused.</p>
-            <div className = "md:grid gap-4 md:grid-cols-2">
-            <div>
-            <h2>Prizes</h2>
-                <div className = "flex flex-col flex-wrap gap-4 items-start">
+            <div className = "flex flex-col">
+            <div className = "pt-3">
+                <div className = "flex flex-row flex-wrap gap-4 items-center justify-center sm:items-start">
                     <div className = "flex flex-col gap-2">
                         <StatPill>
                             <Tooltip id = "effect"/>
@@ -272,14 +273,25 @@ function SuccessModal({states, closeAction, data, weaponMultiplier}: {states: St
 
             <div>
             <h2>Upload Scraps</h2>
-            <p>Show the other adventurers what you did in your battle!</p>
                 <Form id="scrapsSubmit" action="javascript:void(0);" onSubmit={(e) => {closeAction(e)}}>
-                        <span className = "flex flex-col gap-2">
-                        <label className = "font-bold text-accent block">What did you do this session?</label> 
+                        <span className = "flex flex-col gap-4">
+                        <label className = "font-bold text-accent block">What did you do this battle?</label> 
                         <textarea placeholder="Something like 'I improved the UI of the form elements and fixed a bug that was stopping things from uploading.'" className = "resize-y" required form="scrapsSubmit" name="description" id="description"></textarea>
-                        <label className = "font-bold text-accent block">What did you work on? Upload some proof!</label> 
-                        <span className = "text-sm">(Go to <a target="_blank" className="link" href = "https://app.slack.com/client/T0266FRGM/C016DEDUL87">#cdn</a>, upload a scrap,  and put the link here)</span>
-                        <input type="url" placeholder="https://...." required form="scrapsSubmit" name="url" id="url"></input>
+                        
+                        <span className = "grid md:grid-cols-2 gap-4">
+                            <span className = "col-span-1 flex flex-col gap-2">
+                                <label className = "font-bold text-accent block">What did you work on? Upload some <a target="_blank" className="link text-white" href = "https://app.slack.com/client/T0266FRGM/C016DEDUL87">(image or video)</a> proof!</label> 
+                                <input type="url" placeholder="https://hc-cdn.hel1.your-objectstorage.com/..." required form="scrapsSubmit" name="url" id="url"></input>
+                            </span>
+
+                            <span className = "col-span-1 flex flex-col gap-2">
+                                <Tooltip id = "commit"/>
+                                <label data-tooltip-id="commit" data-tooltip-content="If you programmed during this battle, put the link to your commit here (or just use this as a second place to submit proof!)" className = "font-bold text-accent">Coded? Share your commit link here!</label> 
+                                <input type="url" placeholder="https://github.com/..." form="scrapsSubmit" name="codeUrl" id="codeUrl"></input>
+                            </span>
+
+                        </span>
+
                     </span>
                     <Button type="submit" shouldPreventDefault={false} className = "w-max mx-auto">CLAIM REWARDS</Button>
                 </Form>

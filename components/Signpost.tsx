@@ -4,7 +4,7 @@ import Sign from "@/components/common/Sign"
 import StatPill from "@/components/common/StatPill"
 import { Tooltip } from "react-tooltip"
 import { determineLevel } from "@/lib/stats"
-
+import { Info } from "./common/Info"
 const directory = [{
     name: "Campsite",
     link: "/campsite"
@@ -25,6 +25,7 @@ const directory = [{
 export default function Signpost({className}: {className: string}){
     const session = useSession();
     return (
+        <>
         <div className = {`${className}`}>
             <img alt="Header (top)" src = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/01a7c6aa5aa33a6a13d6f8fadb293e72947ec813_image.png"/>
                 <h1 className ="text-3xl sm:text-5xl text-center">signpost</h1>
@@ -52,5 +53,6 @@ export default function Signpost({className}: {className: string}){
 
             </span>
         </div>
+        </>
     )
 }

@@ -16,16 +16,13 @@ export async function LoadCurrentBoss(){
     }
     return (
         <>           
-        <Suspense fallback={<div>loading</div>}>
             <img alt = {activeBoss.name} src = {activeBoss.image} className="w-1/2 p-4 rounded-lg"/>
             <p>{activeBoss.name}</p>
 
-                <div className = "rounded-lg h-8 w-8/12 bg-white/40 border border-accent/50">
-                    <div className = {`${shineEffect} w-full h-full relative rounded-l-lg text-center  bg-accent`} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
+                <div className = "rounded-lg h-8 w-8/12 bg-white/40 border z-0 border-accent/50">
+                    <div className = {`${shineEffect} w-full h-full relative rounded-l-lg text-center z-0 bg-accent`} style={{width: Number(activeBoss.health/activeBoss.maxHealth * 100) + "%"}}/>
                 </div>
                 <span>{activeBoss.health} / {activeBoss.maxHealth} HP</span>
-
-            </Suspense>
         </>
     )
 }

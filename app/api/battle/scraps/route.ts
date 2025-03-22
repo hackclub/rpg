@@ -15,6 +15,11 @@ export async function POST(request: NextRequest){
     const body = await request.json()
     const url = body["url"]
     const description = body["description"]
+    const codeUrl = body["codeUrl"]
+
+    if (!(description && url)){
+        return NextResponse.json({error: "Description and URL must have content"}, { status: 400 })
+    }
 
     const mostRecentBattle = (await getLatestSessionDetails(session!.user.id!))!
 
@@ -24,7 +29,8 @@ export async function POST(request: NextRequest){
             projectId: mostRecentBattle.project.id,
             userId: session!.user.id!,
             description: description,
-            url: url
+            url: url,
+            codeUrl: codeUrl,
         }
     })
 

@@ -129,6 +129,7 @@ model Scrap { // proof of submitted project
   id          Int       @id @default(autoincrement())
   url         String    
   description String
+  codeUrl     String    @default("")
   projectId   Int       
   project     Project   @relation(fields: [projectId], references: [id]) // project that this scrap is associated with
   battleId    Int       

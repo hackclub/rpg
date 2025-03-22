@@ -1,4 +1,5 @@
 import SignInButton from "@/components/SignIn";
+import { Info } from "@/components/common/Info";
 export default function Index() {
   return (
     <>

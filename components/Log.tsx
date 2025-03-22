@@ -37,7 +37,10 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
                     <div className = "flex flex-col col-span-3 gap-1">
                         <span className = "text-accent font-bold">Description: </span>
                         {battle?.scrap?.[0]?.description}
+                        <span><span className = "text-accent font-bold">Media URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.url}>{battle?.scrap?.[0]?.url}</a></span>
+                        <span><span className = "text-accent font-bold">Commit URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.codeUrl}>{battle?.scrap?.[0]?.codeUrl}</a></span>
                     </div>
+
                 
                     </div>
                 </LargePill> 

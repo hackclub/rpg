@@ -96,7 +96,7 @@ export default function AdminPanel(){
                                     onChange={(event) => setQuery(event.target.value)}
                                     className = "w-full"
                                 />
-                                <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border border-accent bg-dark/50 empty:invisible">
+                                <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border-x-1 border-b-1 border-accent bg-darker empty:invisible">
                                     {filteredUsers && filteredUsers!.map((user: RelationsUser) => (
                                     <ComboboxOption key={user.id} value={user} className="p-3 w-full data-[focus]:bg-dark/75">
                                     <span className = "flex flex-row gap-2">
@@ -113,7 +113,7 @@ export default function AdminPanel(){
                                     <div className = "bg-accent/20 p-5">
                                     <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
-                                            <div className = "my-5" key={index}>
+                                            <div className = "my-10" key={index}>
                                                 <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
                                                 <p>All Battles</p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
@@ -121,12 +121,13 @@ export default function AdminPanel(){
                                                         <div key = {`battle_${index}`}>
                                                             <span className = "italic font-bold">Battle #{bat.id} -- ({(new Date(bat.createdAt)).toDateString()}) -- ({(bat.duration/3600).toFixed(2)} hours)</span>
                                                             {bat.scrap && bat.scrap.map((scr: Scrap, index: number) => 
-                                                                <div key = {index} className = "flex flex-col gap-2 h-full">
+                                                                <div key = {index} className = "flex flex-col gap-2 h-full border p-5 my-5 bg-darker/25 rounded-lg">
                                                                     <span>Scrap #{scr.id}  - <a className = "text-sm" href = {scr.url}>URL</a></span>
                                                                     <img className = "object-cover aspect-3/2" src = {scr.url}/>
                                                                     <div className = "grow flex flex-col">
-                                                                        <p className = "inline break-all sm:break-words"><span className = "text-accent">Description:</span> {scr.description}</p>
-                                                                        <p className = "inline break-words"><span className = "text-accent">Status:</span> {scr.status}</p>
+                                                                        <p className = "break-all sm:break-words"><span className = "text-accent">Description:</span> {scr.description}</p>
+                                                                        <p className = "inline break-all sm:break-words"><span className = "text-accent">Commit URL:</span> {scr.codeUrl}</p>
+                                                                        <p className = "break-words"><span className = "text-accent">Status:</span> {scr.status}</p>
                                                                     </div>
                                                                     <span className = "sm:flex sm:flex-row py-4"> 
                                                                         <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=reject", { method: "POST", body: JSON.stringify({id: scr.id})}); mut()}}>reject</Button>
