@@ -118,7 +118,7 @@ export default function AdminPanel(){
                                                 <p>All Battles</p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
                                                     {project.battle.map((bat: any, index: number) => (
-                                                        <div key = {`battle_${index}`}>
+                                                        <div key = {`battle_${index}`} className = "my-5">
                                                             <span className = "italic font-bold">Battle #{bat.id} -- ({(new Date(bat.createdAt)).toDateString()}) -- ({(bat.duration/3600).toFixed(2)} hours)</span>
                                                             {bat.scrap && bat.scrap.map((scr: Scrap, index: number) => 
                                                                 <div key = {index} className = "flex flex-col gap-2 h-full border p-5 my-5 bg-darker/25 rounded-lg">
