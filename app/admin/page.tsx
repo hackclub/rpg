@@ -131,7 +131,7 @@ export default function AdminPanel(){
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
                                                 <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
-                                                <p>All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0].status === "approved")).length}/{project.battle.length} approved)</p>
+                                                <p>All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0]?.status === "approved"))!.length!}/{project.battle.length} approved)</p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
                                                     {project.battle.map((bat: any, index: number) => (
                                                         <div key = {`${project.id}_battle_${index}`} className = "my-5 flex flex-col">
