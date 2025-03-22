@@ -11,6 +11,7 @@ async function main(){
         email: "example@mail.com",
         providerAccountId: "example",
         nickname: "admin",
+        blacklisted: false,
         role: "admin"
       }
     })

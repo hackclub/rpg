@@ -73,7 +73,7 @@ export async function verifyAuth({verifyAdmin = false}: {verifyAdmin?: boolean}=
         return {error: "Unauthed"}
     }
 
-    if (session.user.blacklisted){
+   if (session.user.blacklisted){
         return {error: "You have been blacklisted."}
     }
 
