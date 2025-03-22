@@ -23,8 +23,8 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
                     <div className = "lg:grid lg:grid-cols-4 gap-3">
                     <div className = "col-span-1 flex flex-col gap-1">
                         <div className = "inline md:block">
-                            <span className = "text-accent font-bold">{String(new Date(battle.createdAt).toDateString())}                             {' - '}
-                            {battle.project.name}</span>
+                            <span className = "text-accent font-bold underline decoration-wavy underline-offset-2">{String(new Date(battle.createdAt).toDateString())}                             {' - '}
+                            {battle.project.name} (#{battle.project.id})</span>
                         </div>
                         <ul className = "inline md:block list-disc list-inside">
                             <li>{(battle.duration/3600).toFixed(2)} hours ({battle.duration} seconds)</li>
@@ -35,10 +35,12 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
                     </div>
 
                     <div className = "flex flex-col col-span-3 gap-1">
-                        <span className = "text-accent font-bold">Description: </span>
+                        <span className = "text-accent font-bold underline decoration-wavy underline-offset-2">Scrap #{battle?.scrap?.[0]?.id} </span>
+
+                        <span className = "text-accent">Description: </span>
                         {battle?.scrap?.[0]?.description}
-                        <span><span className = "text-accent font-bold">Media URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.url}>{battle?.scrap?.[0]?.url}</a></span>
-                        <span><span className = "text-accent font-bold">Commit URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.codeUrl}>{battle?.scrap?.[0]?.codeUrl}</a></span>
+                        <span><span className = "text-accent">Media URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.url}>{battle?.scrap?.[0]?.url}</a></span>
+                        <span><span className = "text-accent">Commit URL: </span><a target="_blank" href = {battle?.scrap?.[0]?.codeUrl}>{battle?.scrap?.[0]?.codeUrl}</a></span>
                     </div>
 
                 
