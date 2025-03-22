@@ -7,7 +7,7 @@ import { verifyAuth } from "@/lib/person";
 
 export async function GET(request: NextRequest){
     const session = await auth();
-    const invalidSession = await verifyAuth()
+    const invalidSession = await verifyAuth({verifyBlacklist: false})
     if (invalidSession){
         return NextResponse.json(invalidSession, {status: 401})
     }

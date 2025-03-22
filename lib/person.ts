@@ -67,13 +67,13 @@ async function getTotalHours(){
 }
 
 
-export async function verifyAuth({verifyAdmin = false}: {verifyAdmin?: boolean}={}){
+export async function verifyAuth({verifyAdmin = false, verifyBlacklist=true}: {verifyAdmin?: boolean, verifyBlacklist?: boolean}={}){
     const session = await auth()
     if (!session){
         return {error: "Unauthed"}
     }
 
-   if (session.user.blacklisted){
+   if (verifyBlacklist && session.user.blacklisted){
         return {error: "You have been blacklisted."}
     }
 
