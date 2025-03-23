@@ -5,7 +5,7 @@ from prisma import Prisma
 import logging
 from datetime import datetime, timezone
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 app = App(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
@@ -27,11 +27,12 @@ async def update_active_users():
             }
         )
         now = datetime.now(timezone.utc)
-        active_users = list(set([(battle.user.providerAccountId, battle.boss.name, battle.project.name) for battle in active_battles if (not battle.user.blacklisted and (now - battle.createdAt).seconds > 18000)]))
-        #active_users = ['U078J6H1XL3', 'Boss Name Here', 'Project Name Here']
-        open_convo_inactive_user(active_users)
+        inactive_users = list(set([(battle.user.providerAccountId, battle.boss.name, battle.project.name) for battle in active_battles if (not battle.user.blacklisted and (now - battle.createdAt).seconds > 18000)]))
+        #for user in inactive_users:
+        #    open_convo_inactive_user(user)
+        open_convo_inactive_user(['U078J6H1XL3', 'Boss Name', 'Project Name'])
         await prisma.disconnect()
-        return active_users
+        return inactive_users
     except Exception as e:
         print(e)
         return e
@@ -48,6 +49,8 @@ def open_convo_inactive_user(info):
 *If you're done working on your project, this is a reminder to make sure you [finish or cancel it](https://rpg.hackclub.com/fight)*.
 
 **Happy hacking!**
+
+**If your session is bugged or you can't finish it for any reason, reach out to @phthallo**
                                 ''')
 
 async def main():
