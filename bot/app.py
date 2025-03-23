@@ -28,9 +28,8 @@ async def update_active_users():
         )
         now = datetime.now(timezone.utc)
         inactive_users = list(set([(battle.user.providerAccountId, battle.boss.name, battle.project.name) for battle in active_battles if (not battle.user.blacklisted and (now - battle.createdAt).seconds > 18000)]))
-        #for user in inactive_users:
-        #    open_convo_inactive_user(user)
-        open_convo_inactive_user(['U078J6H1XL3', 'Boss Name', 'Project Name'])
+        for user in inactive_users:
+            open_convo_inactive_user(user)
         await prisma.disconnect()
         return inactive_users
     except Exception as e:
