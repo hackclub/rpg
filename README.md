@@ -41,9 +41,9 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
     git clone https://github.com/phthallo/rpg 
     ```
 
-2. Build and start the container.
+2. Build and start the container. Two Dockerfiles exist - one for the main website (`web`), and the other for the Slack bot (`bot`) which messages users who have been in battles for longer than five hours, every twelve hours.
     ```
-    docker compose up -d --build web
+    docker compose up -d --build
     ```
 
 ## To do:
