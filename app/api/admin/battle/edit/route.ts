@@ -34,16 +34,35 @@ export async function POST(request: NextRequest){
         }
     })
 
+    const bossAssignedToBattle = await prisma.battle.findFirst({
+        where: {
+            id: battleId
+        }, 
+        select: {
+            bossId: true
+        }
+    })
+
     const updateBattle = await prisma.battle.update({
         where: {
             id: battleId
         },
         data: {
             duration: duration,
-            damage: determineDamage(duration, prevBattleData!["multiplier"])
+            damage: determineDamage(duration, prevBattleData!["multiplier"]),
         }
     })
-    console.log(updateBattle)
+
+    const updateBoss = await prisma.boss.update({
+        where: {
+            id: bossAssignedToBattle!["bossId"]
+        },
+        data: {
+            health: {
+                increment: determineDamage(prevBattleData!["duration"], prevBattleData!["multiplier"]) - determineDamage(duration, prevBattleData!["multiplier"])
+            }
+        }
+    })
 
     const updateUserRewards = await prisma.user.update({
         where: {
