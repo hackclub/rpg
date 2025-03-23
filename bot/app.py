@@ -27,7 +27,8 @@ async def update_active_users():
             }
         )
         now = datetime.now(timezone.utc)
-        active_users = set([(battle.user.providerAccountId, battle.boss.name, battle.project.name) for battle in active_battles if (not battle.user.blacklisted and (now - battle.createdAt).seconds > 18000)])
+        active_users = list(set([(battle.user.providerAccountId, battle.boss.name, battle.project.name) for battle in active_battles if (not battle.user.blacklisted and (now - battle.createdAt).seconds > 18000)]))
+        #active_users = ['U078J6H1XL3', 'Boss Name Here', 'Project Name Here']
         open_convo_inactive_user(active_users)
         await prisma.disconnect()
         return active_users
@@ -40,7 +41,7 @@ def open_convo_inactive_user(info):
     channel = app.client.conversations_open(users=info[0])
     app.client.chat_postMessage(channel=channel['channel']['id'], username="RPG Messenger", markdown_text=f'''
 >Hey, you. You're finally awake. 
->You were trying to fight **{info[1]}** with **{info[2]}, right? 
+>You were trying to fight **{info[1]}** with **{info[2]}**, right? 
 >Walked right into that ambush, same as us.
 
 *Translation: You've been in a battle for more than **five hours!***
