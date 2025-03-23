@@ -12,8 +12,8 @@ export const config: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   providers: [
     SlackProvider({
-      clientId: process.env.SLACK_CLIENT_ID!,
-      clientSecret: process.env.SLACK_CLIENT_SECRET!,
+      clientId: process.env.CLIENT_ID!,
+      clientSecret: process.env.CLIENT_SECRET!,
       checks: ['pkce', 'nonce'],
     }),
   ],

@@ -4,7 +4,14 @@ services:
       .env
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.web
     ports:
       - 3000:3000
-    
+  bot: 
+    env_file:
+      .env
+    build: 
+      context: .
+      dockerfile: Dockerfile.bot
+    ports:
+      - 3001:3001

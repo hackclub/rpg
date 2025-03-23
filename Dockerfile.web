@@ -13,7 +13,7 @@ RUN bun install
 WORKDIR /app
 COPY . . 
 RUN bun prisma migrate deploy && \
-    bun prisma generate && \
+    bun prisma generate --generator client && \
     bun prisma db seed
 
 RUN bun run build

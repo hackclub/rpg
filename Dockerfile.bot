@@ -1,0 +1,17 @@
+FROM nikolaik/python-nodejs:python3.13-nodejs23-slim
+
+WORKDIR /app
+
+COPY /bot/* ./
+
+COPY requirements.txt ./
+
+COPY prisma/* ./
+
+RUN python -m ensurepip --upgrade && \
+    pip install -r requirements.txt && \
+    prisma generate --generator bot_client
+
+EXPOSE 3001
+
+CMD ["python3", "app.py"]
