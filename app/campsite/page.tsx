@@ -18,7 +18,7 @@ export default async function Home(){
 
             <div id = "current">
                 <h2>Current Battles ⚔️ </h2>
-                <ActiveUsers currentAdventurers={currentAdventurers}/>
+                <ActiveUsers currentAdventurers={currentAdventurers as {nickname: string}[]}/>
                 <LoadCurrentBattles/>
             </div>  
 

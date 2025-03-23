@@ -23,7 +23,7 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
 
     Under **OAuth & Permissions**, change the Redirect URL to a public url where you can access this project from. Don't have one? Follow the steps [here](https://github.com/hackclub/dos-journey/blob/main/contributing/CONTRIBUTING.md#slack-contributions).
 
-5. With the values of `DATABASE_URL`, `SLACK_CLIENT_ID` and `SLACK_CLIENT_SECRET` obtained from steps 3 and 4, fill out the `.env.example` file as `.env`. Set the `AUTH_URL` to the Redirect URL used in configuring Step 4. Set `AUTH_SECRET` to a randomly generated string.
+5. With the values of `DATABASE_URL`, `CLIENT_ID` and `CLIENT_SECRET` obtained from steps 3 and 4, fill out the `.env.example` file as `.env`. Set the `AUTH_URL` to the Redirect URL used in configuring Step 4. Set `AUTH_SECRET` to a randomly generated string.
 
 6. Seed the database.
    ```

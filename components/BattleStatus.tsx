@@ -100,6 +100,9 @@ export async function LoadCurrentAdventurers(){
     const count = await prisma.user.findMany({
         where: {
             battling: true
+        },
+        select: {
+            nickname: true
         }
     })
     return count

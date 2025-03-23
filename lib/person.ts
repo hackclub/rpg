@@ -50,6 +50,56 @@ async function migrateData(){
 
 }
 
+async function fetchBrokenSession(){
+    // If people are not set as battling, but have battles that have recorded durations of 0 seconds...
+    const people = await prisma.user.findMany({
+        where: {
+            battling: false,
+            battles: {
+                some: {
+                    duration: {
+                        equals: 0
+                    }
+                }
+            }
+        }, 
+        select: {
+            name: true,
+            id: true,
+            providerAccountId: true,
+            battling: true,
+            battles: {
+                where: {
+                    duration: {
+                        equals: 0
+                    }
+                }
+            }
+        }
+    })
+    return people
+}
+
+async function fetchDuplicateSessions(){
+    // wip - people who have more than one 0-second session
+    const people = await prisma.user.findMany({
+        where: {
+            battles: {
+                some: {
+                    duration: {
+                        equals: 0
+                    }
+                }
+            }
+        },
+        select: {
+            name: true,
+            providerAccountId: true,
+            battles: true
+        }
+    })
+    return people
+}
 
 async function getTotalHours(){
     const validSession = (await prisma.battle.findMany({
