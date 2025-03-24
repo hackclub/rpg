@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { Metadata } from "next";
 
 import Signpost from "@/components/Signpost";
-import Loading from "@/components/common/Loading";
 
 
 type Props = {
@@ -40,9 +39,7 @@ export default function GeneralLayout({children, title}: Props){
             </div>
         </div>
         </>
-        : session.status === "loading" 
-        ? <Loading/> : <Loading/>
-        }
+: null        }
         </>
     )
 }

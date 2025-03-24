@@ -1,9 +1,8 @@
 'use client'
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import Loading from "@/components/common/Loading";
 import useSWR from "swr";
 import { multiFetcher } from "@/lib/fetch";
 import { User, Project, Scrap, Battle} from "@prisma/client";
@@ -13,6 +12,7 @@ import { useSWRConfig } from "swr";
 import Impersonate from "@/components/Impersonate";
 import Form from "next/form";
 import { FormEvent } from "react";
+import Loading from "@/app/loading";
 
 // this entire page is really stupid
 type RelationsProject = Project & {scrap: Scrap[]; battle: RelationsBattle[]}
@@ -66,9 +66,7 @@ export default function AdminPanel(){
     }, [data, searchParams])
 
     if (session.status === "loading"){
-        return ( 
-            <Loading/>
-        )
+        return ( <Loading/> )
     }
 
     if (session.data?.user.role !== "admin"){
@@ -77,32 +75,33 @@ export default function AdminPanel(){
         )
     }
 
+
+
     let allUsers
     let filteredUsers: RelationsUser[] = []
 
+
     if ((session.data?.user.role === "admin") && session.status === "authenticated"){
-
-
-    function mut(){
-        mutate(
-            key => "/api/admin/users", 
-            null, 
-            { revalidate: true }
-        )
-    }
-
-    if (data){
-            allUsers = (data[0] as any)["message"]
-            filteredUsers = query === ''
-                    ? allUsers
-                    : allUsers!.filter((person: RelationsUser) => {
-                        return person.nickname!.toLowerCase().includes(query.toLowerCase())
-                    })    
+        function mut(){
+            mutate(
+                key => "/api/admin/users", 
+                null, 
+                { revalidate: true }
+            )
         }
-        
-        const handleSelect = (user: RelationsUser) => {
-            setSelectedUser(user)
-        }
+
+        if (data){
+                allUsers = (data[0] as any)["message"]
+                filteredUsers = query === ''
+                        ? allUsers
+                        : allUsers!.filter((person: RelationsUser) => {
+                            return person.nickname!.toLowerCase().includes(query.toLowerCase())
+                        })    
+            }
+            
+            const handleSelect = (user: RelationsUser) => {
+                setSelectedUser(user)
+            }
 
         async function updateScrap(e: FormEvent<HTMLFormElement>, battleId: number, scrapId: number, projectId: number, userId: string){
             e.preventDefault()
@@ -125,27 +124,26 @@ export default function AdminPanel(){
                     { session?.data?.user.role === "admin" &&
                         <div>                            
                             <div className = "flex flex-col gap-4 w-full">
-                                <span className = "font-bold text-accent">Select User</span>
-                                <Combobox value={selectedUser} onChange={handleSelect} onClose={() => setQuery('')}>
-                                <ComboboxInput
-                                    displayValue={(user: RelationsUser) => user?.nickname!}
-                                    onChange={(event) => setQuery(event.target.value)}
-                                    className = "w-full"
-                                />
-                                <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border-x-1 border-b-1 border-accent bg-darker empty:invisible">
-                                    {filteredUsers && filteredUsers!.map((user: RelationsUser) => (
-                                    <ComboboxOption key={user.id} value={user} className="p-3 w-full data-[focus]:bg-dark/75">
-                                    <span className = "flex flex-row gap-2">
-                                        <img src = {user.image!} className = "size-6 rounded-full"/> 
-                                        {user.nickname} ({user.name})
-                                    </span>
-                                    </ComboboxOption> 
-                                    ))}
-                                </ComboboxOptions>
-                                </Combobox>
-
+                                    <span className = "font-bold text-accent">Select User</span>
+                                    <Combobox value={selectedUser} onChange={handleSelect} onClose={() => setQuery('')}>
+                                    <ComboboxInput
+                                        displayValue={(user: RelationsUser) => user?.nickname!}
+                                        onChange={(event) => setQuery(event.target.value)}
+                                        className = "w-full"
+                                    />
+                                    <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border-x-1 border-b-1 border-accent bg-darker empty:invisible">
+                                        {filteredUsers && filteredUsers!.map((user: RelationsUser) => (
+                                        <ComboboxOption key={user.id} value={user} className="p-3 w-full data-[focus]:bg-dark/75">
+                                        <span className = "flex flex-row gap-2">
+                                            <img src = {user.image!} className = "size-6 rounded-full"/> 
+                                            {user.nickname} ({user.name})
+                                        </span>
+                                        </ComboboxOption> 
+                                        ))}
+                                    </ComboboxOptions>
+                                    </Combobox>
                                 <div>
-                                    <div className = {`bg-accent/20 p-5 ${selectedUser.nickname || isLoading ? "block" : "hidden"}`}>
+                                    <div className = {`bg-accent/20 p-5 ${selectedUser && selectedUser.nickname || isLoading ? "block" : "hidden"}`}>
                                     { isLoading && <div>Loading data...</div>}
                                     { selectedUser && selectedUser.nickname && 
                                     <>

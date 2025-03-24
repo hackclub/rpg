@@ -5,7 +5,7 @@ import BattleButton from "../../components/Battle";
 import useSWR from "swr";
 import { multiFetcher } from "@/lib/fetch";
 import { Boss } from "@/types";
-import Loading from "../../components/common/Loading";
+import Loading from "../loading";
 import Button from "@/components/common/Button";
 
 export default function Fight(){
@@ -21,9 +21,7 @@ export default function Fight(){
         )
     }
     if (isLoading){
-        return (
-            <Loading/>
-        )
+        return (<Loading/>)
     }
     let bosses, currentlyBattling: any, bossInLatestSession: any
 
