@@ -144,9 +144,11 @@ export default function AdminPanel(){
                                 </ComboboxOptions>
                                 </Combobox>
 
-                                <div className = "">
-                                    { selectedUser && 
-                                    <div className = "bg-accent/20 p-5">
+                                <div>
+                                    <div className = {`bg-accent/20 p-5 ${selectedUser.nickname || isLoading ? "block" : "hidden"}`}>
+                                    { isLoading && <div>Loading data...</div>}
+                                    { selectedUser && selectedUser.nickname && 
+                                    <>
                                     <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
@@ -190,8 +192,9 @@ export default function AdminPanel(){
                                                 </div>
                                             </div>
                                         )}</div>
-                                     </div>
-                                        }
+                                        </>
+                                    }
+                                    </div>
                                 </div>
                             </div>
                         </div>
