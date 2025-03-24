@@ -25,15 +25,29 @@ export async function GET(){
             }
         }
     }) as any
-    const r = customProjects
+
+
     for (let projectIndex = 0; projectIndex < customProjects.length; projectIndex++ ){
         let duration = 0
         for (let battleIndex = 0; battleIndex < customProjects[projectIndex].battle.length; battleIndex++){
             duration += customProjects[projectIndex]["battle"][battleIndex]!.duration
         }
-        delete(r[projectIndex]["battle"])
-        r[projectIndex]["duration"] = duration
+        delete(customProjects[projectIndex]["battle"])
+        customProjects[projectIndex]["duration"] = duration
     }
-    return NextResponse.json(r)
+    const hackatimeProjects = await fetch(`https://hackatime.hackclub.com/api/v1/users/${session?.user.providerAccountId}/stats?features=projects`)
+    if (hackatimeProjects.ok){
+        const projects = (await hackatimeProjects.json())["data"]["projects"] as any
+        const hackatimeEdited = projects.map(({name, duration}: {name: string, duration: number}) => 
+                ({ 
+                    name: name + " [Hackatime]",
+                    duration: undefined // there might already be hackatime data for this project, in which case we only want to get the time we know for sure (as in the ones tracked on rpg)
+                })
+            )
+        const initJoined = customProjects.concat(hackatimeEdited)
+        return NextResponse.json(initJoined)
 
+    } else {
+        return NextResponse.json(customProjects)
+    }
 }

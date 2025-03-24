@@ -26,13 +26,14 @@ export default function BattleButton(){
     const [ customProject, setCustomProject ] = useState("")
     const [ projectType, setProjectType ] = useState("")
     const [ projectEffect, setProjectEffect ] = useState("")
+    const [ proj, setProj ] = useState([])
     const session = useSession()
 
     const urls = [
         "/api/battle/status?query=currently", 
         "/api/battle/status?query=latest", 
         "/api/boss/status?query=all", 
-        "/api/project/status"
+        "/api/project/status",
     ]
     const { data, error, isLoading, mutate } = useSWR(urls, multiFetcher, {
         refreshInterval: 250,
@@ -44,6 +45,9 @@ export default function BattleButton(){
 
     })
 
+    if (error){
+        console.log(error)
+    }
     let isBattling, isPaused
 
     useEffect(() => {
@@ -56,15 +60,12 @@ export default function BattleButton(){
 
     let projects, newProjectEffect: string, newProjectType: string, mostRecentBoss
 
-    
+
     if (data){
         isBattling = data[0]["battling"]
         isPaused = data[0]["paused"]
         projects = data[3]
-
-        projects = Array.from(
-            new Map(projects.map((item: any)=> [item.name, item])).values()
-          );    }
+    }
 
     function clearStates(){
         setSelectedProject("")

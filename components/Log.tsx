@@ -22,20 +22,23 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
     return (
         <Modal isOpen={logIsOpen} setIsOpen={setLogIsOpen}>
         <h1 className = "text-3xl md:text-5xl py-4">Battle Log</h1>
-        <p>You've spent {(timeSpentInBattle/3600).toFixed(2)} hours / {(timeSpentInBattle/60).toFixed(2)} minutes in battle. </p>
+        <p>You've spent {(timeSpentInBattle/3600).toFixed(2)} hours / {(timeSpentInBattle/60).toFixed(2)} minutes in battle.
+            <br/> During your battles, you spent time working on these projects: 
+        </p>
         <div className = "py-2 h-1/2">
             <div className = "flex flex-col gap-4">
                 <div className = "flex flex-row gap-2 flex-wrap">
                     { projects.map((project, index: number) => 
-                        <StatPill key={index}>
-                            <span className = "text-sm sm:text-base">
-                                {project.name} ({(project.duration/3600).toFixed(2)} hours)
-                            </span>
-                        </StatPill>
+                        project.duration !== undefined ?
+                            <StatPill key={index}>
+                                <span className = "text-sm sm:text-base">
+                                    {project.name} ({(project.duration/3600).toFixed(2)} hours)
+                                </span>
+                            </StatPill> : null
                     )}
-                </div>  
-                    {battles.length > 0 ? 
-                    battles.map((battle: any, index: number) => 
+                </div>
+                    {battles.length > 0 
+                        ? battles.map((battle: any, index: number) => 
                     <LargePill key={index} >
                         <div className = "lg:grid lg:grid-cols-4 gap-3">
                         <div className = "col-span-1 flex flex-col gap-1">
