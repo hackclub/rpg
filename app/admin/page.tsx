@@ -1,6 +1,6 @@
 'use client'
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import Loading from "@/components/common/Loading";
@@ -44,6 +44,19 @@ export default function AdminPanel(){
     const [ selectedUser, setSelectedUser ] = useState<RelationsUser>(a);
     const [ query, setQuery ] = useState('')
     const { data, error, isLoading} = useSWR(["/api/admin/users"], multiFetcher)
+    const searchParams = useSearchParams()
+
+    useEffect(() => {
+        if (data && searchParams) {
+            const slackId = searchParams.get('slack_id')
+            if (slackId) {
+                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.providerAccountId === slackId)
+                if (user) {
+                    setSelectedUser(user)
+                }
+            }
+        }
+    }, [data, searchParams])
 
     if (session.status === "loading"){
         return ( 
