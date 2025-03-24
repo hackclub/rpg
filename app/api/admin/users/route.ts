@@ -16,6 +16,7 @@ export async function GET(){
             name: true,
             nickname: true,
             providerAccountId: true,
+            email: true,
             id: true,
             image: true,
             scraps: true,

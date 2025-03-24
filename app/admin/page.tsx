@@ -1,6 +1,6 @@
 'use client'
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import Loading from "@/components/common/Loading";
@@ -44,6 +44,26 @@ export default function AdminPanel(){
     const [ selectedUser, setSelectedUser ] = useState<RelationsUser>(a);
     const [ query, setQuery ] = useState('')
     const { data, error, isLoading} = useSWR(["/api/admin/users"], multiFetcher)
+    const searchParams = useSearchParams()
+
+    useEffect(() => {
+        if (data && searchParams) {
+            const email = searchParams.get('email')
+            const slackId = searchParams.get('slack_id')
+            
+            if (email) {
+                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.email === email)
+                if (user) {
+                    setSelectedUser(user)
+                }
+            } else if (slackId) {
+                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.providerAccountId === slackId)
+                if (user) {
+                    setSelectedUser(user)
+                }
+            }
+        }
+    }, [data, searchParams])
 
     if (session.status === "loading"){
         return ( 
@@ -124,9 +144,11 @@ export default function AdminPanel(){
                                 </ComboboxOptions>
                                 </Combobox>
 
-                                <div className = "">
-                                    { selectedUser && 
-                                    <div className = "bg-accent/20 p-5">
+                                <div>
+                                    <div className = {`bg-accent/20 p-5 ${selectedUser.nickname || isLoading ? "block" : "hidden"}`}>
+                                    { isLoading && <div>Loading data...</div>}
+                                    { selectedUser && selectedUser.nickname && 
+                                    <>
                                     <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
@@ -170,8 +192,9 @@ export default function AdminPanel(){
                                                 </div>
                                             </div>
                                         )}</div>
-                                     </div>
-                                        }
+                                        </>
+                                    }
+                                    </div>
                                 </div>
                             </div>
                         </div>
