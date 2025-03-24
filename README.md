@@ -52,3 +52,4 @@ This project uses Next.js, React, TailwindCSS, and Prisma, as well as Auth.js.
 - [x] if a user kills a boss and people are in a session, they will not be able to stop their session
 - [ ] admin panel does not refresh reviewed session status automatically
 - [ ] add hackatime v2 project integration (for rpg v2)
+- [ ] per-project time tracking

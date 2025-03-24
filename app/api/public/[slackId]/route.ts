@@ -7,7 +7,8 @@ import { determineLevel } from "@/lib/stats";
 type returnedData = {
     treasure: number,
     experience: number,
-    level?: number
+    level?: number,
+    timeInBattle: number,
 }
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ slackId: string }> }){
@@ -21,8 +22,21 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             experience: true
         }
     }) as returnedData
-    if (data){
+
+    const timeInBattle = await prisma.battle.findMany({
+        where: {
+            user: {
+                providerAccountId: id
+            }
+        },
+        select: {
+            duration: true
+        }
+    })
+
+    if (data && timeInBattle){
         data["level"] = determineLevel(data["experience"])
+        data["timeInBattle"] = timeInBattle.reduce((partialSum, a) => partialSum + a.duration, 0)
     }
     return NextResponse.json(data)
 }

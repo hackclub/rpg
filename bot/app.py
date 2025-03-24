@@ -55,7 +55,7 @@ def open_convo_inactive_user(info):
 async def main():
     while True:
         asyncio.create_task(update_active_users())
-        await asyncio.sleep(3600)
+        await asyncio.sleep(7200)
 
 if __name__ == "__main__":
     asyncio.run(main())

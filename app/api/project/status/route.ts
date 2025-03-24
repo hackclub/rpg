@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { verifyAuth } from "@/lib/person";
+
 export async function GET(){
     const session = await auth();
     const invalidSession = await verifyAuth()
@@ -16,8 +17,23 @@ export async function GET(){
             userId: session?.user.id
             },
         select: {
-            name: true
+            name: true,
+            battle: {
+                select: {
+                    duration: true
+                }
+            }
         }
-    })
-    return NextResponse.json(customProjects)
+    }) as any
+    const r = customProjects
+    for (var projectIndex = 0; projectIndex < customProjects.length; projectIndex++ ){
+        let duration = 0
+        for (var battleIndex = 0; battleIndex < customProjects[projectIndex].battle.length; battleIndex++){
+            duration += customProjects[projectIndex]["battle"][battleIndex]!.duration
+        }
+        delete(r[projectIndex]["battle"])
+        r[projectIndex]["duration"] = duration
+    }
+    return NextResponse.json(r)
+
 }
