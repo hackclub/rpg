@@ -26,9 +26,9 @@ export async function GET(){
         }
     }) as any
     const r = customProjects
-    for (var projectIndex = 0; projectIndex < customProjects.length; projectIndex++ ){
+    for (let projectIndex = 0; projectIndex < customProjects.length; projectIndex++ ){
         let duration = 0
-        for (var battleIndex = 0; battleIndex < customProjects[projectIndex].battle.length; battleIndex++){
+        for (let battleIndex = 0; battleIndex < customProjects[projectIndex].battle.length; battleIndex++){
             duration += customProjects[projectIndex]["battle"][battleIndex]!.duration
         }
         delete(r[projectIndex]["battle"])
