@@ -48,8 +48,15 @@ export default function AdminPanel(){
 
     useEffect(() => {
         if (data && searchParams) {
+            const email = searchParams.get('email')
             const slackId = searchParams.get('slack_id')
-            if (slackId) {
+            
+            if (email) {
+                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.email === email)
+                if (user) {
+                    setSelectedUser(user)
+                }
+            } else if (slackId) {
                 const user = (data[0] as any)["message"].find((user: RelationsUser) => user.providerAccountId === slackId)
                 if (user) {
                     setSelectedUser(user)
