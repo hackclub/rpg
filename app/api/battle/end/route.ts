@@ -19,7 +19,8 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
           },
           data: {
             duration: ((new Date()).getTime() - (new Date(latestSession!["createdAt"])).getTime())/1000 - totalSecondsPaused.reduce((pSum, a) => pSum + a, 0), // duration of attack session in seconds
-            timePaused: totalSecondsPaused.reduce((pSum, a) => pSum + a, 0)
+            timePaused: totalSecondsPaused.reduce((pSum, a) => pSum + a, 0),
+            endedAt: new Date()
         },
         });
     // 2. update boss hp according to battle duration
@@ -44,7 +45,6 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
                 }
             })
         } else { 
-        
             const reduceBossHP = await prisma.boss.update({
                 where: {
                     id: currentBossData["id"]
@@ -65,14 +65,16 @@ async function onBattleCompletion(search: { where: { email: string } }, userId: 
             experience: { increment: determineExperience(damageDoneLatestSession!["duration"], weaponMultiplier)}
         }
     })
-    // 4. update damage done in the recent session
+    // 4. update damage, treasure, exp done in the recent session 
     latestSession = await getLatestSessionDetails(userId) // refresh the info we have on hand
     const updateUserDamageSession = await prisma.battle.update({
         where: {
             id: latestSession!["id"]
           },
         data: {
-            damage: determineDamage(latestSession!["duration"], weaponMultiplier)
+            damage: determineDamage(latestSession!["duration"], weaponMultiplier),
+            treasure: determineTreasure(latestSession!["duration"], weaponMultiplier),
+            experience: determineExperience(latestSession!["duration"], weaponMultiplier)
         }
     })
 }

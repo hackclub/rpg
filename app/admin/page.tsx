@@ -1,8 +1,8 @@
 'use client'
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from "@headlessui/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense} from "react";
 import useSWR from "swr";
 import { multiFetcher } from "@/lib/fetch";
 import { User, Project, Scrap, Battle} from "@prisma/client";
@@ -13,6 +13,7 @@ import Impersonate from "@/components/Impersonate";
 import Form from "next/form";
 import { FormEvent } from "react";
 import Loading from "@/app/loading";
+import LargePill from "@/components/common/LargePill";
 
 // this entire page is really stupid
 type RelationsProject = Project & {scrap: Scrap[]; battle: RelationsBattle[]}
@@ -27,6 +28,7 @@ const a: RelationsUser = {
     email: "", 
     nickname: null, 
     treasure: 0, 
+    verifiedTreasure: 0,
     createdAt: date, 
     updatedAt: date, 
     emailVerified: null, 
@@ -37,6 +39,7 @@ const a: RelationsUser = {
     paused: false,
     projects: [],
     role: "user"}
+
 
 export default function AdminPanel(){
     const session = useSession();
@@ -122,35 +125,47 @@ export default function AdminPanel(){
         return (
             <GeneralLayout title="Admin Panel">
                     { session?.data?.user.role === "admin" &&
-                        <div>                            
+                        <div>   
+                            <LargePill className = "my-4">                       
+                                <ul className = "list-disc list-inside">
+                                    Tips for admins: 
+                                    <li>Changes made to scraps and sessions will take time to appear.</li>
+                                    <li>To change a session from 'approved' to 'rejected' and vice-versa, you will need to click 'RESET' in between.</li>
+                                    <li>If you are going to change the length of a session after approval, RESET IT FIRST, change the duration, then approve it again.</li>
+                                    <li>Do not spam-click if something doesn't appear to be updating.</li>
+
+                                </ul>
+                            </LargePill>  
                             <div className = "flex flex-col gap-4 w-full">
-                                    <span className = "font-bold text-accent">Select User</span>
-                                    <Combobox value={selectedUser} onChange={handleSelect} onClose={() => setQuery('')}>
-                                    <ComboboxInput
-                                        displayValue={(user: RelationsUser) => user?.nickname!}
-                                        onChange={(event) => setQuery(event.target.value)}
-                                        className = "w-full"
-                                    />
-                                    <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border-x-1 border-b-1 border-accent bg-darker empty:invisible">
-                                        {filteredUsers && filteredUsers!.map((user: RelationsUser) => (
-                                        <ComboboxOption key={user.id} value={user} className="p-3 w-full data-[focus]:bg-dark/75">
-                                        <span className = "flex flex-row gap-2">
-                                            <img src = {user.image!} className = "size-6 rounded-full"/> 
-                                            {user.nickname} ({user.name})
-                                        </span>
-                                        </ComboboxOption> 
-                                        ))}
-                                    </ComboboxOptions>
-                                    </Combobox>
+                                <Suspense>
+                                <span className = "font-bold text-accent">Select User</span>
+                                <Combobox value={selectedUser} onChange={handleSelect} onClose={() => setQuery('')}>
+                                <ComboboxInput
+                                    displayValue={(user: RelationsUser) => user?.nickname!}
+                                    onChange={(event) => setQuery(event.target.value)}
+                                    className = "w-full"
+                                />
+                                <ComboboxOptions anchor="bottom" className="group w-[var(--input-width)] overflow-y-scroll max-h-96 border-x-1 border-b-1 border-accent bg-darker empty:invisible">
+                                    {filteredUsers && filteredUsers!.map((user: RelationsUser) => (
+                                    <ComboboxOption key={user.id} value={user} className="p-3 w-full data-[focus]:bg-dark/75">
+                                    <span className = "flex flex-row gap-2">
+                                        <img src = {user.image!} className = "size-6 rounded-full"/> 
+                                        {user.nickname} ({user.name})
+                                    </span>
+                                    </ComboboxOption> 
+                                    ))}
+                                </ComboboxOptions>
+                                </Combobox>
+                                </Suspense>
                                 <div>
-                                    <div className = {`bg-accent/20 p-5 ${selectedUser && selectedUser.nickname || isLoading ? "block" : "hidden"}`}>
+                                    <div className = {`bg-accent/20 p-5 ${ (selectedUser && selectedUser.nickname) || isLoading ? "block" : "hidden"}`}>
                                     { isLoading && <div>Loading data...</div>}
                                     { selectedUser && selectedUser.nickname && 
                                     <>
                                     <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
-                                                <p className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
+                                                <p id={`project_`+project.name} className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
                                                 <p>All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0]?.status === "approved"))!.length!}/{project.battle.length} approved)</p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
                                                     {project.battle.map((bat: any, index: number) => (
@@ -159,7 +174,7 @@ export default function AdminPanel(){
                                                             <span className = "block">{bat.damage} damage done to {bat.boss.name}</span>
                                                             <span className = "block">({(bat.duration/3600).toFixed(2)}h / {(bat.duration/60).toFixed(2)}m / {bat.duration}s)</span>
                                                             
-                                                            <Form id={`${project.id}_battle_${index}`}  className = "my-2 sm:grid sm:grid-cols-2" action="javascript:void(0);" onSubmit={(e) => updateDuration(e, bat.id)}>
+                                                            <Form id={`${project.id}_battle_${index}`}  className = "my-2 sm:grid sm:grid-cols-2" action="javascript:void(0);" onSubmit={(e) => {updateDuration(e, bat.id); mut()}}>
                                                                 <input form = {`${project.id}_battle_${index}`} placeholder="seconds" required name="duration" id="duration"/>
                                                                 <Button shouldPreventDefault={false} type="submit">UPDATE</Button>
                                                             </Form>
@@ -173,14 +188,15 @@ export default function AdminPanel(){
                                                                         <p className = "break-words"><span className = "text-accent">Status:</span> {scr.status}</p>
                                                                     </div>
                                                                     <span className = "sm:flex sm:flex-row py-4"> 
-                                                                        <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=reject", { method: "POST", body: JSON.stringify({id: scr.id})}); mut()}}>reject</Button>
-                                                                        <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=approve", { method: "POST", body: JSON.stringify({id: scr.id})}); mut()}}>approve</Button>
+                                                                        <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=reject", { method: "POST", body: JSON.stringify({id: scr.id, battleId: bat.id})}); mut()}}>reject</Button>
+                                                                        <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=reset", { method: "POST", body: JSON.stringify({id: scr.id, battleId: bat.id})}); mut()}}>reset</Button>
+                                                                        <Button onClickAction={async () => { await fetch("/api/admin/scrap?query=approve", { method: "POST", body: JSON.stringify({id: scr.id, battleId: bat.id})}); mut()}}>approve</Button>
                                                                     </span>
                                                                 </div>   
                                                             )}
-                                                            <Form id={`${project.id}_battle_${index}_scrap`} className = "flex flex-col items-center justify-center *:w-full" action="javascript:void(0);" onSubmit={(e) => updateScrap(e, bat.id, bat.scrap?.[0]?.id, project.id, selectedUser.id)}>
+                                                            <Form id={`${project.id}_battle_${index}_scrap`} className = "flex flex-col items-center justify-center *:w-full" action="javascript:void(0);" onSubmit={(e) => {updateScrap(e, bat.id, bat.scrap?.[0]?.id, project.id, selectedUser.id); mut()}}>
                                                                 <input form ={`${project.id}_battle_${index}_scrap`} placeholder="description" className = "resize-y" required name="description" id="description"/>
-                                                                <input form = {`${project.id}_battle_${index}_scrap`} placeholder="url" className = "resize-y" required name="url" id="url"/>
+                                                                <input form = {`${project.id}_battle_${index}_scrap`} placeholder="media url" className = "resize-y" required name="url" id="url"/>
                                                                 <input form = {`${project.id}_battle_${index}_scrap`} placeholder="code url" className = "resize-y" required name="codeUrl" id="codeUrl"/>
                                                             <Button shouldPreventDefault={false} type="submit">CREATE/UPDATE SCRAP</Button>
                                                             </Form>

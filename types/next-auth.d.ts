@@ -9,6 +9,7 @@ declare module "next-auth" {
       role?: string;
       nickname?: string;
       blacklisted?: boolean;
+      verifiedTreasure?: number;
     } & DefaultSession["user"];
   }
 

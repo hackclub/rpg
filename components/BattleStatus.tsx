@@ -44,7 +44,6 @@ export async function LoadCurrentBattles(){
         user: true,
         project: true
     }})
-
     return (
         <Suspense fallback={<div>loading</div>}>
         <div className = "flex flex-col gap-4 py-2"> 
@@ -65,7 +64,7 @@ export async function LoadRecentBattles(){
     const recentBattles = await prisma.battle.findMany({
         take: 3,
         orderBy: {
-            updatedAt: "desc"
+            endedAt: "desc"
         },
         where: { 
             NOT: {

@@ -40,12 +40,16 @@ export async function GET(){
         const projects = (await hackatimeProjects.json())["data"]["projects"] as any
         const hackatimeEdited = projects.map(({name, duration}: {name: string, duration: number}) => 
                 ({ 
-                    name: name + " [Hackatime]",
+                    name: name,
                     duration: undefined // there might already be hackatime data for this project, in which case we only want to get the time we know for sure (as in the ones tracked on rpg)
                 })
             )
-        const initJoined = customProjects.concat(hackatimeEdited)
-        return NextResponse.json(initJoined)
+        const joinedArray = customProjects.concat(hackatimeEdited)
+        const removeDuplicates = 
+            [...joinedArray.reduce((map: any, project: any) => 
+              (!map.has(project.name) || project.duration) ? map.set(project.name, { name: project.name, duration: project.duration || undefined }) : map, new Map()).values()];
+
+        return NextResponse.json(removeDuplicates)
 
     } else {
         return NextResponse.json(customProjects)

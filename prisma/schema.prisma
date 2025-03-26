@@ -19,6 +19,7 @@ model User {
   name                String?
   nickname            String?   @default("User")
   treasure            Int       @default(0)
+  verifiedTreasure    Int       @default(0)
   createdAt           DateTime  @default(now())
   emailVerified       DateTime?
   image               String?
@@ -100,23 +101,27 @@ model Item {
 }
 
 model Battle {
-  id            Int        @id @default(autoincrement())
-  bossId        Int
-  userId        String
-  duration      Int        @default(0)
-  damage        Int        @default(0) // damage done to the boss
-  boss          Boss       @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
-  effect        String?    // was this a strength/weakness or none of the boss.
-  multiplier    Float      // damage multiplier in accordance with this being a strength or weakness
-  projectId     Int 
-  project       Project    @relation(fields: [projectId], references: [id]) // project that this battle is associated with
-  scrap         Scrap[]     // scrap submitted for this project.
-  timePaused    Int        @default(0) // total seconds battle was paused for 
-  timesPaused   DateTime[] @default([]) // log each time the session was paused
-  timesUnpaused  DateTime[] @default([]) // log each time the session was unpaused (yeah i know this is really janky pft)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  user          User       @relation(fields: [userId], references: [id])
+  id                Int        @id @default(autoincrement())
+  bossId            Int
+  userId            String
+  duration          Int        @default(0)
+  damage            Int        @default(0) // damage done to the boss
+  treasure          Int        @default(0) // treasure earned as a result of this battle
+  verifiedTreasure  Int        @default(0) 
+  experience        Int        @default(0) // experience earned as a result of this battle
+  boss              Boss       @relation(fields: [bossId], references: [id]) // boss that this battle is associated with
+  effect            String?    // was this a strength/weakness or none of the boss.
+  multiplier        Float      // damage multiplier in accordance with this being a strength or weakness + weapon multiplier
+  projectId         Int 
+  project           Project    @relation(fields: [projectId], references: [id]) // project that this battle is associated with
+  scrap             Scrap[]     // scrap submitted for this project.
+  timePaused        Int        @default(0) // total seconds battle was paused for 
+  timesPaused       DateTime[] @default([]) // log each time the session was paused
+  timesUnpaused     DateTime[] @default([]) // log each time the session was unpaused (yeah i know this is really janky pft)
+  createdAt         DateTime   @default(now())
+  endedAt           DateTime?   
+  updatedAt         DateTime   @updatedAt
+  user              User       @relation(fields: [userId], references: [id])
 }
 
 model Project { // ideally this shouldn't really be used, but if people haven't set up time tracking...

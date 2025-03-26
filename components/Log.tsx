@@ -51,6 +51,8 @@ export default function Log({logIsOpen, setLogIsOpen}: {logIsOpen: boolean, setL
                                 <li>{battle.damage} damage</li>
                                 <li>{battle.boss.name}</li>
                                 <li>Status: {battle?.scrap?.[0]?.status}</li>
+                                <li>Treasure approved: {battle?.verifiedTreasure}</li>
+
                             </ul>
                         </div>
 

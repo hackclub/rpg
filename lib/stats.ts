@@ -3,7 +3,7 @@ export function determineLevel(xp: number){
     // ln(xp) = 2ln(level/0.07)
     // 0.5(ln(xp)) = ln(level/0.07)
     // xp^(0.5) = level/0.07
-    // 0.07xp^(0.5) = level
+    // 0.07xp^(0.5) = level 
     return (Math.floor(0.02* xp**0.5))
 }
 

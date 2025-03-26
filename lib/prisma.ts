@@ -175,7 +175,9 @@ export async function getAllUserBattles(userId: string){
             createdAt: true,
             updatedAt: true,
             boss: true,
-            scrap: true
+            scrap: true,
+            treasure: true,
+            verifiedTreasure: true,
         }
     })
     return response

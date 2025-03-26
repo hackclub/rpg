@@ -26,14 +26,21 @@ export async function POST(request: NextRequest){
             multiplier: true,
             damage: true,
             duration: true,
+            scrap: {
+                select: {
+                    status: true
+                }
+            },
             user: {
                 select: {
                     id: true
                 }
-            }
+            }, 
         }
     })
-
+    if (prevBattleData?.scrap[0].status !== "unreviewed"){
+        return NextResponse.json({message: "Reset before changing the session duration"}, {status: 400})
+    }
     const bossAssignedToBattle = await prisma.battle.findFirst({
         where: {
             id: battleId
@@ -43,6 +50,7 @@ export async function POST(request: NextRequest){
         }
     })
 
+    console.log("updating battle", duration, "trreasure", determineTreasure(duration, prevBattleData!["duration"]))
     const updateBattle = await prisma.battle.update({
         where: {
             id: battleId
@@ -50,6 +58,9 @@ export async function POST(request: NextRequest){
         data: {
             duration: duration,
             damage: determineDamage(duration, prevBattleData!["multiplier"]),
+            treasure: determineTreasure(duration, prevBattleData!["multiplier"]),
+            experience: determineExperience(duration, prevBattleData!["multiplier"]),
+
         }
     })
 
@@ -77,7 +88,6 @@ export async function POST(request: NextRequest){
             }
         }
     })
-    console.log(updateUserRewards)
     return NextResponse.json({ message: "Battle updated successfully" }, { status: 200 })
 
 

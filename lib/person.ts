@@ -116,7 +116,6 @@ async function getTotalHours(){
     return (validSession).reduce((total, battle) => total + battle.duration, 0)/3600;
 }
 
-
 export async function verifyAuth({verifyAdmin = false, verifyBlacklist=true}: {verifyAdmin?: boolean, verifyBlacklist?: boolean}={}){
     const session = await auth()
     if (!session){
