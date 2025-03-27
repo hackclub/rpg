@@ -55,7 +55,7 @@ export default function AdminPanel(){
             const slackId = searchParams.get('slack_id')
             
             if (email) {
-                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.email === email)
+                const user = (data[0] as any)["message"].find((user: RelationsUser) => user.email === email) 
                 if (user) {
                     setSelectedUser(user)
                 }
@@ -165,8 +165,12 @@ export default function AdminPanel(){
                                     <h2 className = "text-6xl"><img src = {selectedUser.image!} className = "size-12 rounded-full inline"/> {selectedUser.nickname} {selectedUser.providerAccountId} <Impersonate user={selectedUser}/></h2>
                                         <div>{(selectedUser.projects).map((project: RelationsProject, index: number) => 
                                             <div className = "my-10" key={index}>
-                                                <p id={`project_`+project.name} className = "text-accent font-bold">Project {index + 1}:  {project.name} ({project.type})</p>
-                                                <p>All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0]?.status === "approved"))!.length!}/{project.battle.length} approved)</p>
+                                                <p className = "text-accent font-bold text-2xl">Project {index + 1}:  {project.name} ({project.type})</p>
+                                                <p>
+                                                    All Battles ({((project.battle).filter((bat) => bat?.scrap?.[0]?.status === "approved"))!.length!}/{project.battle.length} approved)
+                                                    ({((project.battle).filter((bat: any) => bat?.scrap?.[0]?.status === "approved")
+                                                        .reduce((sum, bat) => sum + bat.duration, 0)/3600).toFixed(2)} (2dp) hours approved)
+                                                </p>
                                                 <div className = "py-3 grid lg:grid-cols-2 gap-5">
                                                     {project.battle.map((bat: any, index: number) => (
                                                         <div key = {`${project.id}_battle_${index}`} className = "my-5 flex flex-col">
