@@ -16,7 +16,7 @@
     "@prisma/extension-accelerate": "^1.2.2",
     "@slack/bolt": "^4.2.1",
     "fullstory": "^1.0.10",
-    "next": "15.2.3",
+    "next": "15.4.8",
     "next-auth": "^5.0.0-beta.25",
     "prettier": "^3.5.3",
     "prisma": "^6.5.0",
