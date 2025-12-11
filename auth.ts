@@ -1,10 +1,10 @@
 import NextAuth, { NextAuthConfig } from "next-auth"
 import SlackProvider from "next-auth/providers/slack"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma, { setUserDefaultInventory } from "@/lib/prisma"
 import { getPersonData } from "./lib/person"
 
-export const config: NextAuthConfig = {
+export const config: any = {
   theme: {
     logo: "",
   },
@@ -18,7 +18,7 @@ export const config: NextAuthConfig = {
     }),
   ],
   events: {
-    async signIn({user, account, profile, isNewUser}) {
+    async signIn({user, account, profile, isNewUser}: {user: any, account: any, profile: any, isNewUser: any}) {
       const people = await getPersonData(user.email!) as any
       const r = await prisma.user.update({
          where: {
@@ -44,7 +44,7 @@ export const config: NextAuthConfig = {
     }
   },
   callbacks: {
-    async session({session, token, user, trigger}) {  
+    async session({session, token, user, trigger}: {session: any, token: any, user: any, trigger: any}) {  
       return { ...session, providerAccountId: user.providerAccountId }
     },
   },
